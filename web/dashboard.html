@@ -177,7 +177,7 @@ function showDigest(r) {
   $('digest').innerHTML = `
     <span class="stamp">BANKRUPTCY GRANTED</span>
     <h1>${esc(d.headline || 'Bankruptcy granted.')}</h1>
-    <div class="line">${fmt(s.tabs)} tabs · ${fmt(s.words)} words · ${s.readingHours}h of reading · done in ${s.seconds}s · ${fmt(s.meanTps)} tok/s per call · ${esc(r.model)} on Cerebras</div>
+    <div class="line">${fmt(s.tabs)} tabs · ${fmt(s.words)} words · ${s.readingHours}h of reading · done in ${s.seconds}s · ${fmt(s.meanTps)} tok/s per call · ${esc(/kimi/i.test(r.model) ? 'Kimi K3.1 Pro' : r.model)} on Cerebras</div>
     <div class="roast">${esc(d.roast || '')}</div>
     ${d.diagnosis ? `<div class="diag">🩺 Diagnosis: ${esc(d.diagnosis)}</div>` : ''}
     <div class="dg">
