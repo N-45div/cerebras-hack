@@ -43,11 +43,11 @@ Categories: ${CATEGORIES.map((c) => c[0]).join(' | ')}
 Verdicts: "keep" = genuinely worth reading in full; "skim" = 2 minutes max; "let go" = they will never read it, it is stale, a homepage, a login wall or an error page.
 Be funny but never mean-spirited. No markdown.`;
 
-const SYS_DIGEST = `You are the judge of Tab Bankruptcy Court. You get one line per closed tab: index|category|verdict|title|tldr.
+const SYS_DIGEST = `You are the judge of Tab Bankruptcy Court. You get one line per open tab: index|title|url|start of the page text.
 Return ONLY JSON:
 {"headline":"<punchy verdict, max 12 words>",
  "roast":"<a 60-90 word affectionate roast of this person's tab habits, referencing specific tabs>",
- "quips":{"<category name>":"<max 10-word quip about that category>"},
+ "quips":{"<category name>":"<max 10-word quip>"} for each of these categories that fits their tabs: ${CATEGORIES.map((c) => c[0]).join(' | ')},
  "keep":[<up to 5 indexes truly worth reading>],
  "regret":{"i":<index of the one tab they'll regret closing>,"why":"<max 15 words>"},
  "diagnosis":"<a fake medical-style diagnosis of their condition, max 12 words>"}
@@ -121,14 +121,28 @@ async function run() {
     emit('read', { i: it.i, words: it.words });
   })));
 
+  const readSeconds = (Date.now() - t0) / 1000;
+  console.error(`[timing] read ${items.length} tabs in ${readSeconds.toFixed(1)}s (${items.filter((it) => !it.text).length} empty)`);
+
   // Save the exact inputs so the GPU benchmark can replay the same work.
   mkdirSync(join(ROOT, 'out'), { recursive: true });
   writeFileSync(join(ROOT, 'out', 'excerpts-latest.json'),
     JSON.stringify(items.map(({ i, title, url, text }) => ({ i, title, url, text: text.slice(0, 1400) }))));
 
-  // 2) Summarize + roast in parallel batches; close each tab as its verdict lands.
-  const llmLimit = limiter(config.concurrency);
+  // 2) The judge reads everything at once, in parallel with the clerks below
+  //    (so the whole run pays the server's queue wait only once).
   const llmStart = Date.now();
+  const digestLines = items.map((it) => `${it.i}|${it.title.slice(0, 90)}|${it.url.slice(0, 90)}|${it.text.slice(0, 220)}`).join('\n');
+  const digestPromise = chat([{ role: 'system', content: SYS_DIGEST }, { role: 'user', content: digestLines }],
+    { json: true, maxTokens: 4000, temperature: 0.9 })
+    .then((r) => parseJson(r.text))
+    .catch((e) => {
+      console.error('[digest]', e.message);
+      return { headline: 'Bankruptcy granted.', roast: '', quips: {}, keep: [], regret: null };
+    });
+
+  // 3) Clerks: summarize + roast every tab, all batches at once; close each tab as its verdict lands.
+  const llmLimit = limiter(config.concurrency);
   await Promise.all(chunk(items, config.batchSize).map((batch) => llmLimit(async () => {
     const user = batch.map((it) => `#${it.i}\nTITLE: ${it.title}\nURL: ${it.url}\nTEXT: ${it.text.slice(0, 1400) || '(empty page)'}`).join('\n\n');
     let parsed = [];
@@ -159,18 +173,11 @@ async function run() {
     emit('speed', { ...speedSummary(), aggregateTps: Math.round(stats.outputTokens / ((Date.now() - llmStart) / 1000)) });
   })));
   const llmSeconds = (Date.now() - llmStart) / 1000;
+  const w = [...stats.wallMs].sort((a, b) => a - b);
+  console.error(`[timing] summaries in ${llmSeconds.toFixed(1)}s · ${stats.calls} calls · retries ${stats.retries} · call wall p50 ${w[w.length >> 1]}ms max ${w[w.length - 1]}ms`);
 
-  // 3) The final judgment.
-  const lines = items.map((it) => `${it.i}|${it.category}|${it.verdict}|${it.title.slice(0, 80)}|${it.tldr}`).join('\n');
-  let digest = {};
-  try {
-    const r = await chat([{ role: 'system', content: SYS_DIGEST }, { role: 'user', content: lines }],
-      { json: true, maxTokens: 4000, temperature: 0.9 });
-    digest = parseJson(r.text);
-  } catch (e) {
-    console.error('[digest]', e.message);
-    digest = { headline: 'Bankruptcy granted.', roast: '', quips: {}, keep: [], regret: null };
-  }
+  // 4) The final judgment (already running since step 2).
+  const digest = await digestPromise;
 
   const totalWords = items.reduce((a, it) => a + it.words, 0);
   const speed = speedSummary();

@@ -23,7 +23,10 @@ export async function launch() {
     `--user-data-dir=${profile}`,
     '--no-first-run',
     '--no-default-browser-check',
-    '--disable-features=TabDiscarding',
+    '--disable-features=TabDiscarding,IntensiveWakeUpThrottling',
+    '--disable-background-timer-throttling',
+    '--disable-renderer-backgrounding',
+    '--disable-backgrounding-occluded-windows',
     '--start-maximized',
   ], { detached: true, stdio: 'ignore' }).unref();
   for (let i = 0; i < 50; i++) {
@@ -53,7 +56,7 @@ export async function closeTab(id) {
 }
 
 // Read the rendered text of a tab (what the user actually sees).
-export function readTab(tab, { maxChars = 6000, timeoutMs = 8000 } = {}) {
+export function readTab(tab, { maxChars = 6000, timeoutMs = 2500 } = {}) {
   return new Promise((resolve) => {
     let done = false;
     const finish = (val) => { if (!done) { done = true; try { ws.close(); } catch {} resolve(val); } };

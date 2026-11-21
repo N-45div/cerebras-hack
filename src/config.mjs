@@ -25,7 +25,8 @@ export const config = {
   chromePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe',
   cdpPort: Number(process.env.CDP_PORT || 9333),
   dashboardPort: Number(process.env.DASHBOARD_PORT || 4747),
-  concurrency: Number(process.env.LLM_CONCURRENCY || 24),
+  // All batches go out at once: under load the server queue wait dominates, so one wave is fastest.
+  concurrency: Number(process.env.LLM_CONCURRENCY || 64),
   batchSize: Number(process.env.TABS_PER_CALL || 4),
 };
 

@@ -2,7 +2,7 @@
 import { config } from './config.mjs';
 
 let activeModel = null;
-export const stats = { calls: 0, outputTokens: 0, decodeSeconds: 0, perCallTps: [] };
+export const stats = { calls: 0, outputTokens: 0, decodeSeconds: 0, perCallTps: [], retries: 0, wallMs: [] };
 
 export const getActiveModel = () => activeModel || config.models[0];
 
@@ -36,7 +36,9 @@ export async function chat(messages, { maxTokens = 800, json = false, temperatur
   let lastErr;
   for (const model of candidates) {
     for (let attempt = 0; attempt < 5; attempt++) {
+      const tCall = Date.now();
       const { status, data } = await callOnce(model, body);
+      stats.wallMs.push(Date.now() - tCall);
       if (status === 400 && /reasoning effort/i.test(data.message || '') && body.reasoning_effort) {
         delete body.reasoning_effort; // model (e.g. a fallback) doesn't support it
         attempt--;
@@ -59,6 +61,8 @@ export async function chat(messages, { maxTokens = 800, json = false, temperatur
       lastErr = `${status} ${data.code || ''} ${data.message || JSON.stringify(data).slice(0, 200)}`;
       if (data.code === 'model_not_found' || status === 404 || status === 403) break; // next model
       if (status === 429 || status >= 500) {
+        stats.retries++;
+        if (stats.retries <= 3) console.error(`[llm] ${status} ${data.code || ''} ${(data.message || '').slice(0, 120)}`);
         await new Promise((r) => setTimeout(r, 400 * 2 ** attempt + Math.random() * 300));
         continue;
       }

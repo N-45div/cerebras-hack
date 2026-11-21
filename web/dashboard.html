@@ -61,23 +61,23 @@
   .hidden { display: none !important; }
 
   /* final digest */
-  .digest { position: fixed; inset: 0; background: rgba(10,10,13,.94); backdrop-filter: blur(6px); z-index: 6; overflow: auto; padding: 48px 72px; animation: fade .5s both; }
+  .digest { position: fixed; inset: 0; background: rgba(10,10,13,.95); backdrop-filter: blur(6px); z-index: 6; overflow: auto; padding: 30px 60px; animation: fade .5s both; }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-  .digest .stamp { display: inline-block; border: 4px solid var(--red); color: var(--red); font-weight: 900; font-size: 22px; letter-spacing: .2em; padding: 6px 16px; transform: rotate(-4deg); border-radius: 8px; }
-  .digest h1 { font-size: 64px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; margin: 22px 0 14px; max-width: 1400px; }
-  .digest .line { font-family: 'JetBrains Mono', monospace; font-size: 20px; color: var(--orange); margin-bottom: 22px; }
-  .digest .roast { font-size: 24px; line-height: 1.45; max-width: 1250px; color: #e4e2ea; }
-  .digest .diag { margin-top: 14px; font-size: 18px; color: var(--dim); }
-  .dg { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-top: 34px; }
-  .dg .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px 26px; }
-  .dg h3 { font-size: 14px; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
-  .q { display: flex; gap: 12px; padding: 7px 0; font-size: 17px; border-bottom: 1px solid var(--line); }
+  .digest .stamp { display: inline-block; border: 4px solid var(--red); color: var(--red); font-weight: 900; font-size: 20px; letter-spacing: .2em; padding: 5px 14px; transform: rotate(-4deg); border-radius: 8px; }
+  .digest h1 { font-size: 50px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; margin: 16px 0 10px; max-width: 1500px; }
+  .digest .line { font-family: 'JetBrains Mono', monospace; font-size: 18px; color: var(--orange); margin-bottom: 14px; }
+  .digest .roast { font-size: 20px; line-height: 1.42; max-width: 1500px; color: #e4e2ea; }
+  .digest .diag { margin-top: 10px; font-size: 16px; color: var(--dim); }
+  .dg { display: grid; grid-template-columns: 1.1fr 1fr; gap: 22px; margin-top: 20px; }
+  .dg .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px 22px; }
+  .dg h3 { font-size: 13px; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+  .q { display: flex; gap: 12px; padding: 4px 0; font-size: 15px; border-bottom: 1px solid var(--line); }
   .q:last-child { border: 0; }
   .q .n { font-family: 'JetBrains Mono', monospace; color: var(--orange); min-width: 36px; text-align: right; }
-  .keep a { display: block; color: var(--green); font-weight: 700; font-size: 17px; text-decoration: none; padding: 6px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .regret { margin-top: 18px; font-size: 17px; line-height: 1.4; }
+  .keep a { display: block; color: var(--green); font-weight: 700; font-size: 15px; text-decoration: none; padding: 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .regret { margin-top: 10px; font-size: 15px; line-height: 1.4; }
   .regret a { color: var(--amber); font-weight: 700; }
-  .saved { margin-top: 18px; font-size: 14px; color: var(--dim); }
+  .saved { margin-top: 10px; font-size: 13px; color: var(--dim); }
   .err { position: fixed; bottom: 20px; left: 36px; color: var(--red); font-family: 'JetBrains Mono', monospace; }
 </style>
 </head>
@@ -169,7 +169,7 @@ function showDigest(r) {
   const byI = Object.fromEntries(r.tabs.map((t) => [t.i, t]));
   const counts = {};
   r.tabs.forEach((t) => { counts[t.category] = counts[t.category] || { n: 0, emoji: t.emoji }; counts[t.category].n++; });
-  const quips = Object.entries(counts).sort((a, b) => b[1].n - a[1].n).map(([name, c]) =>
+  const quips = Object.entries(counts).sort((a, b) => b[1].n - a[1].n).slice(0, 8).map(([name, c]) =>
     `<div class="q"><span class="n">${c.n}</span><span>${esc(c.emoji)} <b>${esc(name)}</b>${d.quips && d.quips[name] ? ` · ${esc(d.quips[name])}` : ''}</span></div>`).join('');
   const keep = (d.keep || []).map((i) => byI[i]).filter(Boolean)
     .map((t) => `<a href="${esc(t.url)}" target="_blank" rel="noopener">→ ${esc(t.title)}</a>`).join('') || '<div class="q">Nothing. Bold.</div>';
