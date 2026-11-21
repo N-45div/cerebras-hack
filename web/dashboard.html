@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tab Bankruptcy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0d; --panel: #141419; --line: #24242c; --text: #f3f1ec; --dim: #8b8a93;
+    --red: #ff4d3d; --orange: #f15a29; --green: #3ddc84; --amber: #ffb020;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; height: 100%; overflow: hidden; }
+  .app { display: grid; grid-template-rows: auto auto 1fr; height: 100vh; padding: 28px 36px; gap: 22px; }
+
+  header { display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-weight: 900; font-size: 34px; letter-spacing: -0.02em; display: flex; gap: 14px; align-items: center; }
+  .logo .claw { font-size: 40px; }
+  .logo small { display: block; font-size: 14px; font-weight: 600; color: var(--dim); letter-spacing: 0.02em; }
+  .chip { font-family: 'JetBrains Mono', monospace; font-size: 14px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--dim); }
+  .chip b { color: var(--orange); }
+
+  .stats { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr; gap: 16px; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px 22px; }
+  .stat .k { font-size: 13px; font-weight: 600; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; }
+  .stat .v { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 52px; line-height: 1.1; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .stat .s { font-size: 13px; color: var(--dim); margin-top: 4px; min-height: 18px; }
+  .stat.tabs .v { color: var(--red); font-size: 64px; }
+  .stat.speed .v { color: var(--orange); }
+
+  .main { display: grid; grid-template-columns: 1fr 340px; gap: 20px; min-height: 0; }
+  .feed { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; align-content: start; overflow: hidden; min-height: 0; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; animation: pop .35s cubic-bezier(.2,.9,.3,1.3) both; }
+  @keyframes pop { from { opacity: 0; transform: translateY(-14px) scale(.96); } to { opacity: 1; transform: none; } }
+  .card .cat { font-size: 12px; color: var(--dim); display: flex; justify-content: space-between; gap: 8px; }
+  .card .t { font-weight: 800; font-size: 15px; margin: 6px 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card .d { font-size: 13px; color: #cfcdd6; line-height: 1.35; }
+  .card .r { font-size: 13px; color: var(--amber); margin-top: 6px; font-style: italic; }
+  .verdict { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .v-keep { background: rgba(61,220,132,.15); color: var(--green); }
+  .v-skim { background: rgba(255,176,32,.15); color: var(--amber); }
+  .v-let { background: rgba(255,77,61,.12); color: var(--red); }
+
+  .side { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; overflow: hidden; }
+  .side h3 { font-size: 13px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+  .bar { margin-bottom: 12px; }
+  .bar .l { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .bar .l span:last-child { font-family: 'JetBrains Mono', monospace; color: var(--dim); }
+  .bar .track { height: 8px; background: #1d1d24; border-radius: 99px; overflow: hidden; }
+  .bar .fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--red)); border-radius: 99px; transition: width .3s; }
+
+  /* start screen */
+  .start { position: fixed; inset: 0; display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #1a0f0d 0%, var(--bg) 60%); z-index: 5; }
+  .start .box { text-align: center; }
+  .start .big { font-size: 120px; font-weight: 900; color: var(--red); font-family: 'JetBrains Mono', monospace; line-height: 1; }
+  .start .sub { font-size: 26px; color: var(--dim); margin: 10px 0 40px; }
+  .btn { font: 900 30px Inter, sans-serif; letter-spacing: .02em; color: #fff; background: var(--red); border: 0; border-radius: 20px; padding: 26px 54px; cursor: pointer; box-shadow: 0 0 0 0 rgba(255,77,61,.6); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 26px rgba(255,77,61,0); } 100% { box-shadow: 0 0 0 0 rgba(255,77,61,0); } }
+  .hidden { display: none !important; }
+
+  /* final digest */
+  .digest { position: fixed; inset: 0; background: rgba(10,10,13,.94); backdrop-filter: blur(6px); z-index: 6; overflow: auto; padding: 48px 72px; animation: fade .5s both; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .digest .stamp { display: inline-block; border: 4px solid var(--red); color: var(--red); font-weight: 900; font-size: 22px; letter-spacing: .2em; padding: 6px 16px; transform: rotate(-4deg); border-radius: 8px; }
+  .digest h1 { font-size: 64px; font-weight: 900; letter-spacing: -0.03em; line-height: 1.05; margin: 22px 0 14px; max-width: 1400px; }
+  .digest .line { font-family: 'JetBrains Mono', monospace; font-size: 20px; color: var(--orange); margin-bottom: 22px; }
+  .digest .roast { font-size: 24px; line-height: 1.45; max-width: 1250px; color: #e4e2ea; }
+  .digest .diag { margin-top: 14px; font-size: 18px; color: var(--dim); }
+  .dg { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-top: 34px; }
+  .dg .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px 26px; }
+  .dg h3 { font-size: 14px; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 14px; }
+  .q { display: flex; gap: 12px; padding: 7px 0; font-size: 17px; border-bottom: 1px solid var(--line); }
+  .q:last-child { border: 0; }
+  .q .n { font-family: 'JetBrains Mono', monospace; color: var(--orange); min-width: 36px; text-align: right; }
+  .keep a { display: block; color: var(--green); font-weight: 700; font-size: 17px; text-decoration: none; padding: 6px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .regret { margin-top: 18px; font-size: 17px; line-height: 1.4; }
+  .regret a { color: var(--amber); font-weight: 700; }
+  .saved { margin-top: 18px; font-size: 14px; color: var(--dim); }
+  .err { position: fixed; bottom: 20px; left: 36px; color: var(--red); font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo"><span class="claw">🦞</span><div>TAB BANKRUPTCY<small>Your tabs. Read, judged and closed.</small></div></div>
+    <div class="chip"><b id="model">Kimi K3.1 Pro</b> · on Cerebras</div>
+  </header>
+
+  <div class="stats">
+    <div class="stat tabs"><div class="k">Tabs open</div><div class="v" id="sTabs">0</div><div class="s" id="sTabsSub">&nbsp;</div></div>
+    <div class="stat"><div class="k">Words read</div><div class="v" id="sWords">0</div><div class="s">every tab, actually read</div></div>
+    <div class="stat"><div class="k">Reading saved</div><div class="v" id="sHours">0h</div><div class="s">at 238 words/min</div></div>
+    <div class="stat speed"><div class="k">Tokens / sec</div><div class="v" id="sTps">0</div><div class="s" id="sTpsSub">server, mean per call</div></div>
+    <div class="stat"><div class="k">Elapsed</div><div class="v" id="sTime">0.0s</div><div class="s" id="sCalls">&nbsp;</div></div>
+  </div>
+
+  <div class="main">
+    <div class="feed" id="feed"></div>
+    <div class="side"><h3>Filed under</h3><div id="bars"></div></div>
+  </div>
+</div>
+
+<div class="start" id="start">
+  <div class="box">
+    <div class="big" id="startCount">…</div>
+    <div class="sub">tabs open. You will never read them.</div>
+    <button class="btn" id="goBtn">DECLARE TAB BANKRUPTCY</button>
+  </div>
+</div>
+
+<div class="digest hidden" id="digest"></div>
+<div class="err" id="err"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = (n) => Math.round(n).toLocaleString();
+
+const state = { total: 0, open: 0, words: 0, cats: {}, t0: 0, running: false, cards: 0 };
+const shown = { tabs: 0, words: 0, hours: 0, tps: 0 };
+let target = { tabs: 0, words: 0, hours: 0, tps: 0 };
+
+// Smoothly tween counters toward their targets.
+function tick() {
+  for (const k of Object.keys(shown)) shown[k] += (target[k] - shown[k]) * 0.18;
+  $('sTabs').textContent = fmt(shown.tabs);
+  $('sWords').textContent = fmt(shown.words);
+  $('sHours').textContent = shown.hours.toFixed(1) + 'h';
+  $('sTps').textContent = fmt(shown.tps);
+  if (state.running) $('sTime').textContent = ((performance.now() - state.t0) / 1000).toFixed(1) + 's';
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function verdictChip(v) {
+  const cls = v === 'keep' ? 'v-keep' : v === 'skim' ? 'v-skim' : 'v-let';
+  return `<span class="verdict ${cls}">${esc(v.toUpperCase())}</span>`;
+}
+
+function addCard(t) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `<div class="cat"><span>${esc(t.emoji)} ${esc(t.category)}</span>${verdictChip(t.verdict)}</div>
+    <div class="t">${esc(t.title)}</div><div class="d">${esc(t.tldr)}</div>${t.roast ? `<div class="r">“${esc(t.roast)}”</div>` : ''}`;
+  const feed = $('feed');
+  feed.prepend(el);
+  while (feed.children.length > 18) feed.lastChild.remove();
+}
+
+function renderBars() {
+  const entries = Object.entries(state.cats).sort((a, b) => b[1].n - a[1].n);
+  const max = Math.max(1, ...entries.map((e) => e[1].n));
+  $('bars').innerHTML = entries.map(([name, c]) => `<div class="bar"><div class="l"><span>${esc(c.emoji)} ${esc(name)}</span><span>${c.n}</span></div>
+    <div class="track"><div class="fill" style="width:${(c.n / max) * 100}%"></div></div></div>`).join('');
+}
+
+function onTab(t) {
+  addCard(t);
+  state.cats[t.category] = state.cats[t.category] || { n: 0, emoji: t.emoji };
+  state.cats[t.category].n++;
+  renderBars();
+}
+
+function showDigest(r) {
+  state.running = false;
+  const s = r.stats, d = r.digest || {};
+  const byI = Object.fromEntries(r.tabs.map((t) => [t.i, t]));
+  const counts = {};
+  r.tabs.forEach((t) => { counts[t.category] = counts[t.category] || { n: 0, emoji: t.emoji }; counts[t.category].n++; });
+  const quips = Object.entries(counts).sort((a, b) => b[1].n - a[1].n).map(([name, c]) =>
+    `<div class="q"><span class="n">${c.n}</span><span>${esc(c.emoji)} <b>${esc(name)}</b>${d.quips && d.quips[name] ? ` · ${esc(d.quips[name])}` : ''}</span></div>`).join('');
+  const keep = (d.keep || []).map((i) => byI[i]).filter(Boolean)
+    .map((t) => `<a href="${esc(t.url)}" target="_blank" rel="noopener">→ ${esc(t.title)}</a>`).join('') || '<div class="q">Nothing. Bold.</div>';
+  const rg = d.regret && byI[d.regret.i];
+  $('digest').innerHTML = `
+    <span class="stamp">BANKRUPTCY GRANTED</span>
+    <h1>${esc(d.headline || 'Bankruptcy granted.')}</h1>
+    <div class="line">${fmt(s.tabs)} tabs · ${fmt(s.words)} words · ${s.readingHours}h of reading · done in ${s.seconds}s · ${fmt(s.meanTps)} tok/s per call · ${esc(r.model)} on Cerebras</div>
+    <div class="roast">${esc(d.roast || '')}</div>
+    ${d.diagnosis ? `<div class="diag">🩺 Diagnosis: ${esc(d.diagnosis)}</div>` : ''}
+    <div class="dg">
+      <div class="panel"><h3>Your tabs, filed</h3>${quips}</div>
+      <div class="panel keep"><h3>Actually worth reading</h3>${keep}
+        ${rg ? `<div class="regret">😬 The one you'll regret closing: <a href="${esc(rg.url)}" target="_blank" rel="noopener">${esc(rg.title)}</a><br><span style="color:var(--dim)">${esc(d.regret.why || '')}</span></div>` : ''}
+        <div class="saved">📦 Every one of the ${fmt(s.tabs)} URLs is saved. Nothing is truly lost.</div>
+      </div>
+    </div>`;
+  $('digest').classList.remove('hidden');
+}
+
+function handle(ev) {
+  switch (ev.type) {
+    case 'ready':
+      state.total = state.open = ev.total;
+      target.tabs = ev.total;
+      $('startCount').textContent = fmt(ev.total);
+      break;
+    case 'go':
+      $('start').classList.add('hidden');
+      state.total = state.open = ev.total;
+      target.tabs = ev.total;
+      if (ev.model) $('model').textContent = ev.model.includes('kimi') ? 'Kimi K3.1 Pro' : ev.model;
+      state.t0 = performance.now();
+      state.running = true;
+      break;
+    case 'read':
+      state.words += ev.words;
+      target.words = state.words;
+      target.hours = state.words / 238 / 60;
+      break;
+    case 'tab': onTab(ev); break;
+    case 'closed':
+      state.open--;
+      target.tabs = state.open;
+      $('sTabsSub').textContent = `${fmt(state.total - state.open)} closed`;
+      break;
+    case 'speed':
+      target.tps = ev.meanTps;
+      $('sTpsSub').textContent = `server, mean per call · ${fmt(ev.aggregateTps)} aggregate`;
+      $('sCalls').textContent = `${ev.calls} parallel calls`;
+      break;
+    case 'done':
+      target.tabs = 0;
+      setTimeout(() => showDigest(ev), 900);
+      if (window.__es) window.__es.close();
+      break;
+    case 'error':
+      $('err').textContent = '⚠ ' + ev.message;
+      break;
+  }
+}
+
+if (window.__RUN__) {
+  // Static digest mode (saved file): render the final state directly.
+  const r = window.__RUN__;
+  $('start').classList.add('hidden');
+  r.tabs.forEach(onTab);
+  Object.assign(target, { tabs: 0, words: r.stats.words, hours: r.stats.readingHours, tps: r.stats.meanTps });
+  $('sTime').textContent = r.stats.seconds + 's';
+  showDigest(r);
+} else {
+  const es = new EventSource('/events');
+  window.__es = es;
+  es.onmessage = (m) => handle(JSON.parse(m.data));
+  $('goBtn').onclick = () => fetch('/go', { method: 'POST' });
+}
+</script>
+</body>
+</html>
