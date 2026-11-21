@@ -34,8 +34,12 @@ export async function chat(messages, { maxTokens = 800, json = false, temperatur
 
   const candidates = activeModel ? [activeModel] : config.models;
   let lastErr;
+  let overloaded = false;
   for (const model of candidates) {
-    for (let attempt = 0; attempt < 5; attempt++) {
+    // Overload (429 queue_exceeded / 5xx) means wait and retry the SAME model. Never silently
+    // switch models because of load: the demo must say exactly which model did the work.
+    if (overloaded) break;
+    for (let attempt = 0; attempt < 10; attempt++) {
       const tCall = Date.now();
       const { status, data } = await callOnce(model, body);
       stats.wallMs.push(Date.now() - tCall);
@@ -59,11 +63,12 @@ export async function chat(messages, { maxTokens = 800, json = false, temperatur
         return { text: data.choices[0].message?.content || '', tokens: out, tps, model };
       }
       lastErr = `${status} ${data.code || ''} ${data.message || JSON.stringify(data).slice(0, 200)}`;
-      if (data.code === 'model_not_found' || status === 404 || status === 403) break; // next model
+      if (data.code === 'model_not_found' || status === 404 || status === 403) { overloaded = false; break; } // next model
       if (status === 429 || status >= 500) {
         stats.retries++;
         if (stats.retries <= 3) console.error(`[llm] ${status} ${data.code || ''} ${(data.message || '').slice(0, 120)}`);
-        await new Promise((r) => setTimeout(r, 400 * 2 ** attempt + Math.random() * 300));
+        overloaded = true;
+        await new Promise((r) => setTimeout(r, Math.min(8000, 500 * 2 ** attempt) + Math.random() * 500));
         continue;
       }
       break;

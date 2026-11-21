@@ -13,7 +13,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, sans-serif; height: 100%; overflow: hidden; }
-  .app { display: grid; grid-template-rows: auto auto 1fr; height: 100vh; padding: 28px 36px; gap: 22px; }
+  .app { display: grid; grid-template-rows: auto auto auto 1fr; height: 100vh; padding: 24px 36px; gap: 18px; }
 
   header { display: flex; align-items: center; justify-content: space-between; }
   .logo { font-weight: 900; font-size: 34px; letter-spacing: -0.02em; display: flex; gap: 14px; align-items: center; }
@@ -60,6 +60,15 @@
   @keyframes pulse { 70% { box-shadow: 0 0 0 26px rgba(255,77,61,0); } 100% { box-shadow: 0 0 0 0 rgba(255,77,61,0); } }
   .hidden { display: none !important; }
 
+  /* the real tabs, as favicons: a wall on the start screen, a strip that empties during the run */
+  .wall { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 1300px; margin: 0 auto 36px; }
+  .fav { width: 26px; height: 26px; border-radius: 6px; background: #1d1d24 center/18px no-repeat; border: 1px solid var(--line);
+         display: grid; place-items: center; font: 700 11px Inter, sans-serif; color: var(--dim); overflow: hidden;
+         transition: transform .35s cubic-bezier(.5,0,.75,0), opacity .35s; }
+  .fav.gone { transform: scale(0) rotate(-25deg); opacity: 0; }
+  .strip { display: flex; flex-wrap: wrap; gap: 5px; min-height: 26px; }
+  .strip .fav { width: 22px; height: 22px; background-size: 15px; border-radius: 5px; font-size: 10px; }
+
   /* final digest */
   .digest { position: fixed; inset: 0; background: rgba(10,10,13,.95); backdrop-filter: blur(6px); z-index: 6; overflow: auto; padding: 30px 60px; animation: fade .5s both; }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
@@ -88,6 +97,8 @@
     <div class="chip"><b id="model">Kimi K3.1 Pro</b> · on Cerebras</div>
   </header>
 
+  <div class="strip" id="strip"></div>
+
   <div class="stats">
     <div class="stat tabs"><div class="k">Tabs open</div><div class="v" id="sTabs">0</div><div class="s" id="sTabsSub">&nbsp;</div></div>
     <div class="stat"><div class="k">Words read</div><div class="v" id="sWords">0</div><div class="s">every tab, actually read</div></div>
@@ -106,6 +117,7 @@
   <div class="box">
     <div class="big" id="startCount">…</div>
     <div class="sub">tabs open. You will never read them.</div>
+    <div class="wall" id="wall"></div>
     <button class="btn" id="goBtn">DECLARE TAB BANKRUPTCY</button>
   </div>
 </div>
@@ -190,14 +202,25 @@ function showDigest(r) {
   $('digest').classList.remove('hidden');
 }
 
+function favEl(t) {
+  const d = document.createElement('div');
+  d.className = 'fav';
+  if (t.favicon && /^(https?:|data:)/.test(t.favicon)) d.style.backgroundImage = `url("${t.favicon.replace(/"/g, '%22')}")`;
+  else d.textContent = (t.host || '?')[0].toUpperCase();
+  d.title = t.host || '';
+  return d;
+}
+
 function handle(ev) {
   switch (ev.type) {
     case 'ready':
       state.total = state.open = ev.total;
       target.tabs = ev.total;
       $('startCount').textContent = fmt(ev.total);
+      $('wall').replaceChildren(...(ev.tabs || []).map(favEl));
       break;
     case 'go':
+      $('strip').replaceChildren(...(ev.tabs || []).map((t) => { const d = favEl(t); d.id = 'fav' + t.i; return d; }));
       $('start').classList.add('hidden');
       state.total = state.open = ev.total;
       target.tabs = ev.total;
@@ -211,7 +234,10 @@ function handle(ev) {
       target.hours = state.words / 238 / 60;
       break;
     case 'tab': onTab(ev); break;
-    case 'closed':
+    case 'closed': {
+      const f = document.getElementById('fav' + ev.i);
+      if (f) { f.classList.add('gone'); setTimeout(() => f.remove(), 380); }
+    }
       state.open--;
       target.tabs = state.open;
       $('sTabsSub').textContent = `${fmt(state.total - state.open)} closed`;

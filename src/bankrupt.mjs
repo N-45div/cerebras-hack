@@ -84,6 +84,7 @@ const server = http.createServer((req, res) => {
   res.writeHead(404).end();
 });
 
+const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
 const chunk = (arr, n) => Array.from({ length: Math.ceil(arr.length / n) }, (_, k) => arr.slice(k * n, k * n + n));
 const isOurs = (url) => url.startsWith(DASH) || url.includes(`127.0.0.1:${config.dashboardPort}`) || url.includes(`localhost:${config.dashboardPort}`);
 
@@ -108,8 +109,8 @@ async function run() {
     if (!STAY) setTimeout(() => process.exit(0), 500);
     return;
   }
-  const items = tabs.map((t, i) => ({ i, id: t.id, ws: t.webSocketDebuggerUrl, url: t.url, title: t.title, words: 0, text: '' }));
-  emit('go', { total: items.length, model: getActiveModel() });
+  const items = tabs.map((t, i) => ({ i, id: t.id, ws: t.webSocketDebuggerUrl, url: t.url, title: t.title, favicon: t.faviconUrl || '', words: 0, text: '' }));
+  emit('go', { total: items.length, model: getActiveModel(), tabs: items.map(({ i, favicon, url }) => ({ i, favicon, host: hostOf(url) })) });
 
   // 1) Read every tab's rendered text in parallel.
   const readLimit = limiter(16);
@@ -249,6 +250,7 @@ server.listen(config.dashboardPort, '127.0.0.1', async () => {
   }
   const dash = await chrome.openTab(DASH + (AUTO ? '?auto=1' : ''));
   if (dash?.id) await chrome.activateTab(dash.id);
-  emit('ready', { total: LIMIT ? Math.min(LIMIT, tabs.length) : tabs.length, model: config.models[0] });
+  const shown = LIMIT ? tabs.slice(0, LIMIT) : tabs;
+  emit('ready', { total: shown.length, model: config.models[0], tabs: shown.map((t) => ({ favicon: t.faviconUrl || '', host: hostOf(t.url) })) });
   if (AUTO) setTimeout(start, Number(process.env.AUTO_DELAY_MS || 1500));
 });
