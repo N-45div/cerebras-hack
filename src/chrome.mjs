@@ -44,6 +44,10 @@ export async function openTab(url) {
   return r.json();
 }
 
+export async function activateTab(id) {
+  await fetch(`${base()}/json/activate/${id}`).catch(() => {});
+}
+
 export async function closeTab(id) {
   await fetch(`${base()}/json/close/${id}`).catch(() => {});
 }

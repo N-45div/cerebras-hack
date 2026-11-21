@@ -36,7 +36,7 @@ export const CATEGORIES = [
   ['Other', '🗂️'],
 ];
 
-const SYS_TABS = `You are the clerk of Tab Bankruptcy Court. A person kept far too many browser tabs open.
+export const SYS_TABS = `You are the clerk of Tab Bankruptcy Court. A person kept far too many browser tabs open.
 For each tab you get its index, title, URL and an excerpt of the page text. Return ONLY JSON:
 {"tabs":[{"i":<index>,"category":"<one category from the list>","tldr":"<=18 words: what the page ACTUALLY says (be accurate)>","verdict":"keep"|"skim"|"let go","roast":"<=12 words: a playful jab at the person who hoarded this tab"}]}
 Categories: ${CATEGORIES.map((c) => c[0]).join(' | ')}
@@ -102,6 +102,12 @@ async function run() {
   const t0 = Date.now();
   let tabs = (await chrome.listTabs()).filter((t) => !isOurs(t.url));
   if (LIMIT) tabs = tabs.slice(0, LIMIT);
+  if (!tabs.length) {
+    emit('error', { message: 'No tabs open. Run: node src/seed.mjs' });
+    console.log('No tabs open in the Tab Bankruptcy browser. Fill it first: node src/seed.mjs');
+    if (!STAY) setTimeout(() => process.exit(0), 500);
+    return;
+  }
   const items = tabs.map((t, i) => ({ i, id: t.id, ws: t.webSocketDebuggerUrl, url: t.url, title: t.title, words: 0, text: '' }));
   emit('go', { total: items.length, model: getActiveModel() });
 
@@ -114,6 +120,11 @@ async function run() {
     it.words = r.words || 0;
     emit('read', { i: it.i, words: it.words });
   })));
+
+  // Save the exact inputs so the GPU benchmark can replay the same work.
+  mkdirSync(join(ROOT, 'out'), { recursive: true });
+  writeFileSync(join(ROOT, 'out', 'excerpts-latest.json'),
+    JSON.stringify(items.map(({ i, title, url, text }) => ({ i, title, url, text: text.slice(0, 1400) }))));
 
   // 2) Summarize + roast in parallel batches; close each tab as its verdict lands.
   const llmLimit = limiter(config.concurrency);
@@ -225,7 +236,12 @@ server.listen(config.dashboardPort, '127.0.0.1', async () => {
   console.error(`[tab-bankruptcy] ${tabs.length} tabs open. Dashboard: ${DASH}`);
   // Open the dashboard inside the same Chrome so it is the last tab standing.
   const existing = (await chrome.listTabs()).find((t) => isOurs(t.url));
-  if (!existing) await chrome.openTab(DASH + (AUTO ? '?auto=1' : ''));
+  if (existing) {
+    // Reload so it reconnects to this server, then bring it to the front.
+    await chrome.closeTab(existing.id);
+  }
+  const dash = await chrome.openTab(DASH + (AUTO ? '?auto=1' : ''));
+  if (dash?.id) await chrome.activateTab(dash.id);
   emit('ready', { total: LIMIT ? Math.min(LIMIT, tabs.length) : tabs.length, model: config.models[0] });
-  if (AUTO) setTimeout(start, 1500);
+  if (AUTO) setTimeout(start, Number(process.env.AUTO_DELAY_MS || 1500));
 });
