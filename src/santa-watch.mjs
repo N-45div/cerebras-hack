@@ -39,9 +39,12 @@ async function newSession() {
 async function result() {
   const s = await tabSession();
   // Older sessions stay mounted in the DOM: judge only the newest (last visible) chat view.
-  const last = "[...document.querySelectorAll('main')].filter(e => e.offsetParent).pop()";
-  const text = await s.evaluate(`${last}?.innerText`);
-  const links = await s.evaluate(`[...new Set([...(${last}?.querySelectorAll('a[href*="/products/"]') || [])].map(a => a.href))]`);
+  // Hit-test: keep only elements actually painted in the viewport (hidden sessions fail this).
+  const onScreen = `((e) => { const r = e.getBoundingClientRect(); if (r.width === 0 || r.bottom < 0 || r.top > innerHeight) return false; const h = document.elementFromPoint(r.left + Math.min(8, r.width / 2), r.top + r.height / 2); return !!h && (e === h || e.contains(h) || h.contains(e)); })`;
+  await s.evaluate("[...document.querySelectorAll('*')].filter(e => e.scrollHeight > e.clientHeight + 50 && /auto|scroll/.test(getComputedStyle(e).overflowY)).forEach(e => { e.scrollTop = e.scrollHeight; })");
+  await sleep(800);
+  const links = await s.evaluate(`[...new Set([...document.querySelectorAll('a[href*="/products/"]')].filter(${onScreen}).map(a => a.href))]`);
+  const text = await s.evaluate(`[...document.querySelectorAll('span,div')].filter(e => /tok\\/s mean/.test(e.textContent) && e.children.length === 0).filter(${onScreen}).map(e => e.textContent).pop() || ''`);
   s.close();
   return { text: text || '', links: links || [] };
 }
@@ -70,7 +73,7 @@ while (Date.now() < end && tries < TRIES) {
     const r = await result();
     const tps = /([\d,]+) tok\/s mean · ([\d,]+) p90/.exec(r.text);
     const failed = /Couldn't finish|needs a short break/i.test(r.text);
-    const shopLinks = r.links.filter((u) => !/bing\.com|127\.0\.0\.1|openclaw/.test(u));
+    const shopLinks = r.links.filter((u) => !/bing\.com|127\.0\.0\.1|openclaw|\/\/store\//i.test(u));
     log(`readout: ${tps ? tps[0] : 'none'} · product links: ${shopLinks.length} · failed: ${failed}`);
     if (shopLinks.length >= 5) { // the final list exists (failure notices from older sessions may share the view)
       const mean = tps ? Number(tps[1].replace(/,/g, '')) : 0;
