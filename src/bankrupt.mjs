@@ -13,6 +13,9 @@ import { chat, parseJson, limiter, speedSummary, getActiveModel, stats } from '.
 import * as chrome from './chrome.mjs';
 
 const args = process.argv.slice(2);
+// Chars of page text per tab sent to the model. Sized so a 130+ tab run stays under the
+// hackathon's 50K uncached tokens/minute limit.
+const EXCERPT = Number(process.env.EXCERPT_CHARS || 650);
 const flag = (n) => args.includes(n);
 const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
 const AUTO = flag('--auto');
@@ -133,7 +136,7 @@ async function run() {
   // 2) The judge reads everything at once, in parallel with the clerks below
   //    (so the whole run pays the server's queue wait only once).
   const llmStart = Date.now();
-  const digestLines = items.map((it) => `${it.i}|${it.title.slice(0, 90)}|${it.url.slice(0, 90)}|${it.text.slice(0, 220)}`).join('\n');
+  const digestLines = items.map((it) => `${it.i}|${it.title.slice(0, 90)}|${it.url.slice(0, 90)}|${it.text.slice(0, 110)}`).join('\n');
   const digestPromise = chat([{ role: 'system', content: SYS_DIGEST }, { role: 'user', content: digestLines }],
     { json: true, maxTokens: 4000, temperature: 0.9 })
     .then((r) => parseJson(r.text))
@@ -145,7 +148,7 @@ async function run() {
   // 3) Clerks: summarize + roast every tab, all batches at once; close each tab as its verdict lands.
   const llmLimit = limiter(config.concurrency);
   await Promise.all(chunk(items, config.batchSize).map((batch) => llmLimit(async () => {
-    const user = batch.map((it) => `#${it.i}\nTITLE: ${it.title}\nURL: ${it.url}\nTEXT: ${it.text.slice(0, 1400) || '(empty page)'}`).join('\n\n');
+    const user = batch.map((it) => `#${it.i}\nTITLE: ${it.title}\nURL: ${it.url}\nTEXT: ${it.text.slice(0, EXCERPT) || '(empty page)'}`).join('\n\n');
     let parsed = [];
     let tps = 0;
     try {
