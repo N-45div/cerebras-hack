@@ -7,23 +7,93 @@
       "in": "renders/tab-bankruptcy-film-final.mp4",
       "out": "renders/tab-bankruptcy-film-voiced.mp4",
       "lines": [
-        { "at": 0.3, "until": 3.9, "text": "Tab Bankruptcy. For people with way too many tabs." },
-        { "at": 4.2, "until": 7.6, "text": "I just tell OpenClaw: declare tab bankruptcy." },
-        { "at": 7.9, "until": 20.1, "text": "Kimi K3.1 Pro on Cerebras reads all one hundred thirty-five tabs, files each one, judges it, roasts me for it, and closes it. Twelve and a half seconds." },
-        { "at": 20.4, "until": 24.6, "text": "Verdict: my browser is a startup with no shipping date." },
-        { "at": 27.8, "until": 34.3, "text": "OpenClaw hands back the digest, and every URL is saved. Nothing is truly lost." },
-        { "at": 34.8, "until": 45.6, "text": "Same Kimi, same eight tabs. On Moonshot's own GPUs: eighty-three tokens a second. On Cerebras: three hundred forty-six. Over four times faster." },
-        { "at": 46.2, "until": 52.3, "text": "Tab Bankruptcy. Kimi K3.1 Pro on Cerebras, through OpenClaw." }
+        {
+          "at": 0.3,
+          "until": 3.9,
+          "text": "Tab Bankruptcy. For people with way too many tabs."
+        },
+        {
+          "at": 4.2,
+          "until": 7.6,
+          "text": "I just tell OpenClaw: declare tab bankruptcy."
+        },
+        {
+          "at": 7.9,
+          "until": 20.1,
+          "text": "Kimi K3.1 Pro on Cerebras reads all one hundred thirty-five tabs, files each one, judges it, roasts me for it, and closes it. Twelve and a half seconds."
+        },
+        {
+          "at": 20.4,
+          "until": 24.6,
+          "text": "Verdict: my browser is a startup with no shipping date."
+        },
+        {
+          "at": 27.8,
+          "until": 34.3,
+          "text": "OpenClaw hands back the digest, and every URL is saved. Nothing is truly lost."
+        },
+        {
+          "at": 34.8,
+          "until": 45.6,
+          "text": "Same Kimi, same eight tabs. On Moonshot's own GPUs: eighty-three tokens a second. On Cerebras: three hundred forty-six. Over four times faster."
+        },
+        {
+          "at": 46.2,
+          "until": 52.3,
+          "text": "Tab Bankruptcy. Kimi K3.1 Pro on Cerebras, through OpenClaw."
+        }
       ]
     },
     "santa": {
       "in": "renders/santa-bounty-601.mp4",
       "out": "renders/santa-bounty-601-voiced.mp4",
       "lines": [
-        { "at": 0.5, "until": 6.0, "text": "Santa's Speedy Shopper: Kimi on Cerebras, shopping the real web." },
-        { "at": 6.5, "until": 25.6, "text": "Kimi fires five web searches at once through context dot dev, then scrapes five real product pages to read each exact name and price. We sped this part up, because the hackathon queue was packed." },
-        { "at": 26.5, "until": 38.6, "text": "Then it copies what it found straight into a checked list. Copying is predictable, and Cerebras decodes predictable text fast." },
-        { "at": 39.0, "until": 46.9, "text": "Five real gifts, every link live. Six hundred and one tokens per second, measured by the official speed patch." }
+        {
+          "at": 0.5,
+          "until": 6,
+          "text": "Santa's Speedy Shopper: Kimi on Cerebras, shopping the real web."
+        },
+        {
+          "at": 6.5,
+          "until": 25.6,
+          "text": "Kimi fires five web searches at once through context dot dev, then scrapes five real product pages to read each exact name and price. We sped this part up, because the hackathon queue was packed."
+        },
+        {
+          "at": 26.5,
+          "until": 38.6,
+          "text": "Then it copies what it found straight into a checked list. Copying is predictable, and Cerebras decodes predictable text fast."
+        },
+        {
+          "at": 39,
+          "until": 46.9,
+          "text": "Five real gifts, every link live. Six hundred and one tokens per second, measured by the official speed patch."
+        }
+      ]
+    },
+    "santa640": {
+      "in": "renders/santa-bounty-640.mp4",
+      "out": "renders/santa-bounty-640-voiced.mp4",
+      "lines": [
+        {
+          "at": 0.5,
+          "until": 6,
+          "text": "Santa's Speedy Shopper: Kimi on Cerebras, shopping the real web."
+        },
+        {
+          "at": 6.5,
+          "until": 15.4,
+          "text": "Kimi picks its own searches and stores, then reads each product page for the exact name and price."
+        },
+        {
+          "at": 16,
+          "until": 30.5,
+          "text": "No store list and nothing hard-coded. It copies what it found into a checked list, and Cerebras decodes copied text fast."
+        },
+        {
+          "at": 31,
+          "until": 39.1,
+          "text": "Five real gifts, every link live. Six hundred forty tokens per second, from the official speed patch."
+        }
       ]
     }
   }

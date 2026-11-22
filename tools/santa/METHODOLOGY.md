@@ -28,10 +28,12 @@ Cerebras uses speculative decoding, so predictable text (copying titles, prices 
 | Approach | Who chooses the stores and searches | Model responses | Best readout |
 |---|---|---|---|
 | 1. Shopify store search through the `web_fetch` tool, then answer | Kimi | 2-3 | 477 mean (423 recorded live) |
-| 2. **Open-web search and scrape through context.dev (MCP tools), then answer** | **Kimi** | 3 | **601 mean · 1,241 p90**, live, all 5 picks verified. **Our entry.** |
+| 2. Open-web search and scrape through context.dev (MCP tools), then answer | Kimi | 3+ | 601 mean · 1,241 p90 (two early searches reused prompt examples); 600 with no examples |
+| 2b. **Same, with OpenClaw Tool Search off and no example terms in the prompt** | **Kimi** | 3 | **640 mean · 1,571 p90**, live, all 5 picks verified. **Our entry.** |
+| 4. One-step `find_products` MCP tool (`shop-mcp.mjs`): agent-chosen queries, search + product extraction in code | Kimi | 2 | 362 and ~420: slower, the decision turn reasons heavily |
 | 3. Link understanding: one model call | the prompt | 1 | not used (below) |
 
-Our entry is approach 2 because it is the agent doing the shopping: Kimi decides what to search for, which pages to open and which gifts to pick.
+Our entry is approach 2b because it is the agent doing the shopping. The one config change that helped: `tools.toolSearch: false`. With Tool Search on, OpenClaw hides tools behind search/describe steps, which cost Kimi extra short, reasoning-heavy responses before it could shop: Kimi decides what to search for, which pages to open and which gifts to pick.
 
 ### Approach 3, tried and not used: one model call with OpenClaw link understanding
 
