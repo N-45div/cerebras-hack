@@ -46,7 +46,7 @@ for (let i = 0; i < 50 && !latest; i++) await sleep(100);
 
 const ff = spawn('ffmpeg', ['-y', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
   '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '17', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', outFile],
-  { stdio: ['pipe', 'ignore', 'pipe'] });
+  { stdio: ['pipe', 'ignore', 'ignore'] }); // stderr ignored: an unread pipe would block ffmpeg
 const ffDone = new Promise((r) => ff.on('close', r));
 const t0 = Date.now();
 let written = 0;

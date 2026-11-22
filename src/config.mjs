@@ -27,7 +27,7 @@ export const config = {
   dashboardPort: Number(process.env.DASHBOARD_PORT || 4747),
   // All batches go out at once: under load the server queue wait dominates, so one wave is fastest.
   concurrency: Number(process.env.LLM_CONCURRENCY || 64),
-  batchSize: Number(process.env.TABS_PER_CALL || 8), // 8 per call + copied title/url: ~445 vs ~350 tok/s per call (src/tps-lab3.mjs)
+  batchSize: Number(process.env.TABS_PER_CALL || 4),
 };
 
 if (!config.apiKey) {
