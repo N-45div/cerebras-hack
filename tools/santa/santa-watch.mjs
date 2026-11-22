@@ -44,7 +44,8 @@ async function result() {
   const onScreen = `((e) => { const r = e.getBoundingClientRect(); if (r.width === 0 || r.bottom < 0 || r.top > innerHeight) return false; const h = document.elementFromPoint(r.left + Math.min(8, r.width / 2), r.top + r.height / 2); return !!h && (e === h || e.contains(h) || h.contains(e)); })`;
   await s.evaluate("[...document.querySelectorAll('*')].filter(e => e.scrollHeight > e.clientHeight + 50 && /auto|scroll/.test(getComputedStyle(e).overflowY)).forEach(e => { e.scrollTop = e.scrollHeight; })");
   await sleep(800);
-  const links = await s.evaluate(`[...new Set([...document.querySelectorAll('a[href*="/products/"]')].filter(${onScreen}).map(a => a.href))]`);
+  // Any on-screen link to an outside store page counts (Shopify /products/, Amazon /dp/, Etsy /listing/...).
+  const links = await s.evaluate(`[...new Set([...document.querySelectorAll('a[href^="http"]')].filter(${onScreen}).map(a => a.href).filter(u => !/127\\.0\\.0\\.1|localhost|openclaw|context\\.dev|bing\\.com|\\/\\/store\\//i.test(u) && new URL(u).pathname.length > 1))]`);
   const text = await s.evaluate(`[...document.querySelectorAll('span,div')].filter(e => /tok\\/s mean/.test(e.textContent) && e.children.length === 0).filter(${onScreen}).map(e => e.textContent).pop() || ''`);
   s.close();
   return { text: text || '', links: links || [] };
