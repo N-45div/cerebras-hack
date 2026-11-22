@@ -95,6 +95,32 @@
           "text": "Five real gifts, every link live. Six hundred forty tokens per second, from the official speed patch."
         }
       ]
+    },
+    "santa751": {
+      "in": "renders/santa-bounty-751.mp4",
+      "out": "renders/santa-bounty-751-voiced.mp4",
+      "lines": [
+        {
+          "at": 0.5,
+          "until": 5.8,
+          "text": "Santa's Speedy Shopper: Kimi on Cerebras, shopping the real web."
+        },
+        {
+          "at": 6.3,
+          "until": 19.6,
+          "text": "Kimi picks its own searches and stores, then reads each product page for the exact name and price. We sped this part up; the queue was packed."
+        },
+        {
+          "at": 20.2,
+          "until": 33.5,
+          "text": "Before each step, Kimi thinks one word, go, and acts. Reasoning is the slowest thing it decodes, so less of it makes the whole run faster."
+        },
+        {
+          "at": 34.2,
+          "until": 48,
+          "text": "Five real gifts from five stores, every pick checked against the pages it read. Seven hundred fifty-one tokens per second, from the official speed patch."
+        }
+      ]
     }
   }
 }
