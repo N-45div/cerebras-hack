@@ -46,6 +46,17 @@ async function local(b) {
 }
 
 async function cerebras(b) {
+  // The hackathon endpoint is congested: on a run of 429s, wait and try the whole call again.
+  for (let tries = 0; ; tries++) {
+    try { return await cerebrasOnce(b); } catch (e) {
+      if (tries >= 20 || !/429|5\d\d/.test(e.message)) throw e;
+      process.stdout.write('q');
+      await new Promise((r) => setTimeout(r, 15000));
+    }
+  }
+}
+
+async function cerebrasOnce(b) {
   const t0 = Date.now();
   const r = await chat([{ role: 'system', content: SYS }, { role: 'user', content: prompt(b) }], { json: true, maxTokens: 2000, temperature: 0.8 });
   return { tokens: r.tokens, decodeS: r.tokens / (r.tps || 1), wallS: (Date.now() - t0) / 1000, model: r.model };
