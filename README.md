@@ -98,13 +98,13 @@ The verdicts in Tab Bankruptcy are creative writing, so the engine's per-call sp
 
 Five real Christmas gifts for a software engineer, each under $100, from five real stores, found by OpenClaw with Kimi K3.1 Pro on Cerebras and measured with the [official speed patch](https://github.com/wkasekende/openclaw-speed-patch) (OpenClaw `8b18b55` + patch).
 
-**751 tok/s mean · 978 p90 (server)**, from a live recorded run (Tool Search off; Kimi chose every gift idea, search, store and pick):
+**952 tok/s mean · 1,111 p90 (server)**, from a live recorded run (Tool Search off; Kimi chose every gift idea, search, store and pick):
 
 1. Kimi runs 5 web searches at once through [context.dev](https://context.dev) (OpenClaw MCP, only the `web-search` and `web-scrape` tools exposed).
 2. It scrapes real product pages in parallel to read each exact name and price.
 3. It answers with a checked list copied straight from those pages, which is the fastest shape for Cerebras to decode.
 
-Our transcripts showed Kimi's reasoning decodes about 3x slower than the rest of its output, so the prompt (`tools/santa/prompts/santa-go.txt`) asks Kimi to work on instinct and think only "Go" before each step. That and every other speed-motivated line is disclosed in [METHODOLOGY.md](tools/santa/METHODOLOGY.md). The previous entry read 640 tok/s mean with the same tools.
+Our transcripts showed Kimi's reasoning decodes about 3x slower than the rest of its output, so the prompt (`tools/santa/prompts/santa-go.txt`) asks Kimi to work on instinct and think only "Go" before each step. That and every other speed-motivated line is disclosed in [METHODOLOGY.md](tools/santa/METHODOLOGY.md). Earlier entries with the same tools read 640 (before the "Go" prompt) and 751. In the 952 run Kimi picked two magnetic cable organizers (different products and stores), so it has 4 distinct gift ideas; the 751 run has 5.
 
 Nothing is hard-coded, and the prompt names no stores or search terms. `tools/santa/verify-picks.mjs` reads the run's OpenClaw transcript and checks that every picked product's name, price and link appear in the tool results that run received; all 5 verified, and all 5 links were live afterwards.
 

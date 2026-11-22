@@ -30,7 +30,7 @@ Cerebras uses speculative decoding, so predictable text (copying titles, prices 
 | 1. Shopify store search through the `web_fetch` tool, then answer | Kimi | 2-3 | 477 mean (423 recorded live) |
 | 2. Open-web search and scrape through context.dev (MCP tools), then answer | Kimi | 3+ | 601 mean · 1,241 p90 (two early searches reused prompt examples); 600 with no examples |
 | 2b. Same, with OpenClaw Tool Search off and no example terms in the prompt | Kimi | 3 | 640 mean · 1,571 p90, live, all 5 picks verified |
-| 2c. **Same, with the "Go" prompt (`prompts/santa-go.txt`, below)** | **Kimi** | 3-4 | **751 mean · 978 p90**, live, all 5 picks verified product pages from 5 stores. **Our entry.** |
+| 2c. **Same, with the "Go" prompt (`prompts/santa-go.txt`, below)** | **Kimi** | 3-4 | **952 mean · 1,111 p90** (session `347c8867`), live, all 5 picks verified product pages from 5 stores; two picks are both magnetic cable organizers. Also 751 mean · 978 p90 (session `98cea34e`) with 5 distinct ideas. **Our entry.** |
 | 4. One-step `find_products` MCP tool (`shop-mcp.mjs`): agent-chosen queries, search + product extraction in code | Kimi | 2 | 362 and ~420: slower, the decision turn reasons heavily |
 | 3. Link understanding: one model call | the prompt | 1 | not used (below) |
 
@@ -88,7 +88,7 @@ An analysis of 166 responses with server timing (31 sessions) found:
 - **Context size made no difference** (at matched reasoning share: 429 / 426 / 402 / 414 tok/s for prompts under 10K, 10-25K, 25-50K and over 50K tokens).
 - Reasoning cannot be switched off on this endpoint (`none` / `minimal` are rejected); `low` is the minimum.
 
-So the prompt now asks Kimi not to deliberate (`prompts/santa-go.txt`): *"Work on instinct… Your thinking before every step must be exactly the one word 'Go'."* Kimi still chooses the gift ideas, search terms, pages and picks. Result: 751 tok/s mean (session `98cea34e`). Two other runs with this prompt were not entered: one read 822 but its fifth link was a collection page, not a product page (the prompt and `verify-picks.mjs` now reject those); one read 712 but produced no links. **Disclosure:** that line, the per-call settings (US results, compact responses, a product/price extraction schema) and the spare sixth scrape each have a function (US prices, visible prices, cover for a failed page), but they are also there partly because they make responses faster.
+So the prompt now asks Kimi not to deliberate (`prompts/santa-go.txt`): *"Work on instinct… Your thinking before every step must be exactly the one word 'Go'."* Kimi still chooses the gift ideas, search terms, pages and picks. Results: 952 tok/s mean (session `347c8867`; Kimi picked two cable organizers from different stores, so 4 distinct ideas) and 751 (session `98cea34e`, 5 distinct ideas); a third valid run read 725. Two other runs with this prompt were not entered: one read 822 but its fifth link was a collection page, not a product page (the prompt and `verify-picks.mjs` now reject those); one read 712 but produced no links. **Disclosure:** that line, the per-call settings (US results, compact responses, a product/price extraction schema) and the spare sixth scrape each have a function (US prices, visible prices, cover for a failed page), but they are also there partly because they make responses faster.
 
 ## State hygiene
 
