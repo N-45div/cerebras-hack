@@ -4,5 +4,5 @@ Fast path: many brand stores run Shopify and expose a live product search at htt
 
 In your first turn, call web_fetch on 5 different stores' search URLs at once (pick stores you know sell great desk, tech or everyday-carry gifts). These results are live store data, so no extra verification is needed; only if a store fails, swap in another store in one more turn.
 
-Then reply with exactly 5 lines and nothing else, copying the values from the results:
+Then reply with Santa's checked list: a markdown table of every product the searches returned, copying the values exactly (columns: # | title | store | price USD | available | link as https://STORE/products/handle). Then a line "Santa's picks:" and exactly 5 lines, one available product under $100 per store:
 N. **product title** — store — $price USD — https://STORE/products/handle
