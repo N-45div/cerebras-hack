@@ -1,0 +1,9 @@
+Santa's Speedy Shopper: 5 Christmas gifts for a software engineer who has everything, each under $100, from 5 different real stores. These are the stores' own live product searches:
+https://www.keychron.com/search/suggest.json?q=keyboard&resources[type]=product&resources[limit]=6&country=US&currency=USD
+https://ugmonk.com/search/suggest.json?q=desk&resources[type]=product&resources[limit]=6&country=US&currency=USD
+https://www.orbitkey.com/search/suggest.json?q=organiser&resources[type]=product&resources[limit]=6&country=US&currency=USD
+https://aeropress.com/search/suggest.json?q=coffee&resources[type]=product&resources[limit]=6&country=US&currency=USD
+https://www.craighill.co/search/suggest.json?q=desk&resources[type]=product&resources[limit]=6&country=US&currency=USD
+OpenClaw has already fetched these searches and the live product lines are in your context. Do not call any tools. Reply with:
+Santa's checked list: every live product line above, copied exactly, one per line.
+Santa's picks: exactly 5 lines, one in-stock product under $100 from each store, copied from the lines above: N. **title** — store — $price USD — link
