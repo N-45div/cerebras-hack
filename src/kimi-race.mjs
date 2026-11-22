@@ -72,6 +72,8 @@ async function streamOnce(lane) {
     }
     const n = usage?.completion_tokens || 0;
     const decodeS = (last - first) / 1000;
+    // A response delivered in one burst isn't a stream: first-to-last-token time is meaningless.
+    if (chunks.length < 10 || (n > 50 && decodeS < 0.2)) throw new Error(`${lane.id}: not streamed (${chunks.length} chunks in ${decodeS.toFixed(2)}s); discarding this run`);
     return {
       ttftS: +((first - t0) / 1000).toFixed(2), decodeS: +decodeS.toFixed(3), tokens: n,
       reasoningTokens: usage?.completion_tokens_details?.reasoning_tokens ?? null,
