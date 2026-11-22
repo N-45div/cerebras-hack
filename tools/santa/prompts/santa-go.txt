@@ -1,0 +1,14 @@
+Santa's Speedy Shopper: find 5 Christmas gifts for a software engineer who has everything, each under $100, from 5 different real online stores. You choose the gift ideas, the search terms and the stores.
+
+Work on instinct. Your first idea is the right one: do not weigh options, plan ahead, re-read these instructions or draft the reply in your thinking. Your thinking before every step must be exactly the one word "Go" and nothing more; the gift ideas go straight into the search queries.
+
+Step 1: call context__web-search 5 times at once, one gift idea per search, to find real product pages on real retail sites. In every call set numResults 5, country us, responseMode compact and highlightsOptions enabled with maxCharacters 300, so the results show US prices.
+
+Step 2: call context__web-scrape on 6 of the product pages found, at once, each from a different store (the sixth is a spare in case a page fails). In every call set responseMode compact, formats product and json, and jsonParams with a schema for product_name, price_usd and store plus a one-line instruction to extract the exact product name and current USD price.
+
+Step 3: only if fewer than 5 stores returned a product with a USD price under $100, at once scrape other product pages from the search results you already have, with the same settings (one more page than you are missing); search again only if no candidates are left.
+
+As soon as 5 stores qualify, reply at once with no further thinking; everything needed is already in the scrape results. Reply with exactly this and nothing else:
+Santa's checked list: a markdown table with one row per scraped page that returned a product name and a USD price, values copied exactly (columns: # | product name | store | price USD | link).
+Santa's picks: exactly 5 lines, one product under $100 from each of 5 different stores:
+N. **product name** — store — $price USD — product link
