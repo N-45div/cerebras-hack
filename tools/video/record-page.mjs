@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 // Records any page in this repo (served locally) to an MP4 via the DevTools screencast:
 // page only, exact 1920x1080. Stops HOLD seconds after the page sets window.__DONE__.
-//   node src/record-page.mjs --page web/race.html [--hold 5] [--max 120] [--out renders/race.mp4]
+//   node tools/video/record-page.mjs --page web/kimi-race.html [--hold 5] [--max 120] [--out renders/race.mp4]
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { mkdirSync } from 'node:fs';
 import { join, normalize, extname } from 'node:path';
-import { ROOT } from './config.mjs';
-import { launch, openTab, closeTab } from './chrome.mjs';
+import { ROOT } from '../../src/config.mjs';
+import { launch, openTab, closeTab } from '../../src/chrome.mjs';
 
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
-const PAGE = opt('--page', 'web/race.html');
+const PAGE = opt('--page', 'web/kimi-race.html');
 const HOLD = Number(opt('--hold', 5));
 const MAX = Number(opt('--max', 120));
 const FPS = 30;

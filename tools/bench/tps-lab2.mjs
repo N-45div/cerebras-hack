@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Does a long copied table (every live search result) decode faster than a 5-line answer?
 // Uses real Shopify search results as the "tool output", like the OpenClaw run sees.
-import { config } from './config.mjs';
+import { config } from '../../src/config.mjs';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const UA = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36' };
 const stores = [['www.keychron.com', 'keyboard'], ['www.orbitkey.com', 'organiser'], ['ugmonk.com', 'desk'], ['www.craighill.co', 'desk'], ['fellowproducts.com', 'mug']];

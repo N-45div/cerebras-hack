@@ -1,0 +1,17 @@
+{
+  "name": "tab-bankruptcy",
+  "version": "1.0.0",
+  "description": "Tell OpenClaw you have too many tabs: Kimi K3.1 Pro on Cerebras reads, files, roasts and closes every one.",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "seed": "node src/seed.mjs",
+    "start": "node src/bankrupt.mjs",
+    "auto": "node src/bankrupt.mjs --auto",
+    "probe": "node src/probe.mjs",
+    "install-skill": "node tools/install-skill.mjs",
+    "race": "node tools/bench/kimi-race.mjs",
+    "voiceover": "node tools/video/voiceover.mjs"
+  }
+}

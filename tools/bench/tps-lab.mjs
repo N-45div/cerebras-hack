@@ -2,8 +2,8 @@
 // What makes Kimi decode faster on Cerebras? Same model, different output shapes and
 // temperatures; speed = completion_tokens / server completion_time (what the speed patch reads).
 // Retries patiently through 429s so it can run during the hackathon overload.
-//   node src/tps-lab.mjs [--reps 2]
-import { config } from './config.mjs';
+//   node tools/bench/tps-lab.mjs [--reps 2]
+import { config } from '../../src/config.mjs';
 
 const REPS = Number(process.argv[process.argv.indexOf('--reps') + 1] || 2);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

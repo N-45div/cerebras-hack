@@ -2,11 +2,11 @@
 // Kimi vs Kimi: the same Tab Bankruptcy prompt on Kimi K3.1 Pro served by Cerebras and by
 // Moonshot's own GPU platform (kimi-k3.1-pro and kimi-k3.1-pro-highspeed). All streamed;
 // speed uses the hackathon formula: (output tokens - 1) / (last token time - first token time).
-// Every chunk's arrival time is kept so web/race.html can replay exactly what streamed.
-//   node src/kimi-race.mjs [--tabs 8] [--runs 3]
+// Every chunk's arrival time is kept so web/kimi-race.html can replay exactly what streamed.
+//   node tools/bench/kimi-race.mjs [--tabs 8] [--runs 3]
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, config } from './config.mjs';
+import { ROOT, config } from '../../src/config.mjs';
 
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };

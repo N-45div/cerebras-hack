@@ -1,9 +1,9 @@
 .env
 .env.*
+!.env.example
 node_modules/
 out/
 renders/
 *.log
 .cache/
 chrome-profile/
-voice/lines/

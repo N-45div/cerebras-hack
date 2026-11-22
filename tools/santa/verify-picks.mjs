@@ -2,11 +2,13 @@
 // Proves a Santa run's picks weren't made up: for each line under "Santa's picks:", the product
 // name, price and link must all appear in the tool results (search / scrape / fetch) that the run
 // itself received, as recorded in its OpenClaw transcript.
-//   node src/verify-picks.mjs <session-id-prefix>
+//   node tools/santa/verify-picks.mjs <session-id-prefix>
 import zlib from 'node:zlib';
 import { DatabaseSync } from 'node:sqlite';
+import { join } from 'node:path';
+import { homedir } from 'node:os';
 
-const db = new DatabaseSync('D:/speedpatch/state/agents/main/agent/openclaw-agent.sqlite', { readOnly: true });
+const db = new DatabaseSync(join(process.env.OPENCLAW_STATE_DIR || join(homedir(), '.openclaw'), 'agents', 'main', 'agent', 'openclaw-agent.sqlite'), { readOnly: true });
 const prefix = process.argv[2];
 const dec = (r) => r.event_json || (r.event_zstd ? zlib.zstdDecompressSync(Buffer.from(r.event_zstd)).toString('utf8') : '');
 const events = db.prepare('select event_json, event_zstd from transcript_events where session_id like ? order by seq').all(prefix + '%').map(dec);

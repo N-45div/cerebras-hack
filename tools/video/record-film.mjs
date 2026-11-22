@@ -4,11 +4,11 @@
 //   2. when OpenClaw's agent runs the tab-bankruptcy skill, the dashboard tab it opens;
 //   3. back to OpenClaw for the agent's reply.
 // One continuous video; the switch times are printed so the edit can label any speed-up.
-//   node src/record-film.mjs [--port 18789] [--hold-dash 6] [--hold-reply 7] [--out renders/film-take.mp4]
+//   node tools/video/record-film.mjs [--port 18789] [--hold-dash 6] [--hold-reply 7] [--out renders/film-take.mp4]
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, config } from './config.mjs';
+import { ROOT, config } from '../../src/config.mjs';
 
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };

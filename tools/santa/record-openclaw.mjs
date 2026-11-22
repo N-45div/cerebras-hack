@@ -2,15 +2,15 @@
 // Records an OpenClaw web chat run (page only, 1920x1080, via the DevTools screencast):
 // types a prompt into the chat tab, follows the run, and stops HOLD seconds after the
 // agent finishes. Used for the Speed Bounty take on the patched OpenClaw build.
-//   node src/record-openclaw.mjs --prompt prompts/santa.txt [--port 18799] [--hold 8] [--max 900]
+//   node tools/santa/record-openclaw.mjs --prompt tools/santa/prompts/santa-search.txt [--port 18799] [--hold 8] [--max 900]
 import { spawn } from 'node:child_process';
 import { readFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, config } from './config.mjs';
+import { ROOT, config } from '../../src/config.mjs';
 
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };
-const PROMPT = readFileSync(opt('--prompt', 'prompts/santa.txt'), 'utf8').trim();
+const PROMPT = readFileSync(opt('--prompt', join(ROOT, 'tools', 'santa', 'prompts', 'santa-search.txt')), 'utf8').trim();
 const PORT = opt('--port', '18799');
 const HOLD = Number(opt('--hold', 8));
 const MAX = Number(opt('--max', 900));

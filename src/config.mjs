@@ -16,10 +16,11 @@ if (existsSync(envPath)) {
 export const config = {
   apiKey: process.env.CEREBRAS_API_KEY,
   baseUrl: process.env.CEREBRAS_BASE_URL || 'https://api.cerebras.ai/v1',
-  // Primary model first; fallbacks are used only if the primary is unavailable.
+  // Kimi K3.1 Pro by default. Optional fallbacks are tried only if the model id doesn't exist
+  // (never on overload: every number we report must come from Kimi).
   models: [
-    process.env.CEREBRAS_MODEL || 'moonshotai-kimi-k3.1-pro-test',
-    ...(process.env.CEREBRAS_FALLBACK_MODELS || 'gpt-oss-120b')
+    process.env.CEREBRAS_MODEL || 'moonshotai-kimi-k3.1-pro-trial',
+    ...(process.env.CEREBRAS_FALLBACK_MODELS || '')
       .split(',').map((s) => s.trim()).filter(Boolean),
   ],
   chromePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe',

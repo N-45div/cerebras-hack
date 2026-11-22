@@ -15,7 +15,7 @@ closes it, and produces a digest. Every URL is saved, so nothing is truly lost.
 1. Run this command in a shell (it takes ~10-40 seconds; do not interrupt it):
 
    ```
-   node C:/Users/ndivij/cerebras-hack/src/bankrupt.mjs --auto
+   node {repo}/src/bankrupt.mjs --auto
    ```
 
    A live dashboard opens in the Tab Bankruptcy browser while tabs close.
@@ -39,4 +39,4 @@ Keep it punchy. Do not add commentary beyond what the summary contains.
 - If the user wants a dry run without closing tabs: add `--no-close`.
 - If the user wants only some tabs handled: add `--limit N`.
 - If the user has no tabs open yet, they can fill the browser with
-  `node C:/Users/ndivij/cerebras-hack/src/seed.mjs`.
+  `node {repo}/src/seed.mjs`.

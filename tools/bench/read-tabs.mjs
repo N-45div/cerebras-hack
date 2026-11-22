@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Reads the text of every open tab (no model calls) and saves out/excerpts-latest.json,
 // the input that bench/race scripts replay. Local app tabs are skipped.
-//   node src/read-tabs.mjs
+//   node tools/bench/read-tabs.mjs
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT } from './config.mjs';
-import * as chrome from './chrome.mjs';
+import { ROOT } from '../../src/config.mjs';
+import * as chrome from '../../src/chrome.mjs';
 
 const isLocal = (url) => /^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])(:\d+)?\//.test(url);
 const tabs = (await chrome.listTabs()).filter((t) => !isLocal(t.url));

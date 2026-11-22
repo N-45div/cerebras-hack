@@ -2,7 +2,7 @@
 // Recovers an MP4 that ffmpeg never finalized (no moov atom): reads the length-prefixed
 // H.264 NAL units from its mdat, prefixes the SPS/PPS of a reference file encoded with the
 // same settings, and writes an Annex-B stream that ffmpeg can remux.
-//   node src/recover-mp4.mjs broken.mp4 reference.mp4 out.h264
+//   node tools/video/recover-mp4.mjs broken.mp4 reference.mp4 out.h264
 import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 

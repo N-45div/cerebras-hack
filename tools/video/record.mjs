@@ -3,15 +3,15 @@
 // only the page itself is captured (exact 1920x1080), never the desktop, other windows
 // or notifications, and it works even if the window is not in front.
 //   1. node src/seed.mjs              fill the browser, wait ~20s for pages to load
-//   2. node src/record.mjs            starts dashboard + recording, presses the big red button
+//   2. node tools/video/record.mjs            starts dashboard + recording, presses the big red button
 //      --trigger openclaw             the run is started by an OpenClaw agent message instead
 //      --hold 9                       seconds to keep recording on the digest
 //      --lead 3                       seconds on the start screen before the run
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, config } from './config.mjs';
-import { listTabs } from './chrome.mjs';
+import { ROOT, config } from '../../src/config.mjs';
+import { listTabs } from '../../src/chrome.mjs';
 
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };

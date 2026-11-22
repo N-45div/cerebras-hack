@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 // Which engine settings make Tab Bankruptcy's own calls decode fastest on Cerebras?
 // Real clerk prompt, real excerpts from the last run; speed = completion_tokens / server completion_time.
-//   node src/tps-lab3.mjs [--runs 3]
+//   node tools/bench/tps-lab3.mjs [--runs 3]
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, config } from './config.mjs';
+import { ROOT, config } from '../../src/config.mjs';
 
 const RUNS = Number(process.argv[process.argv.indexOf('--runs') + 1] || 3);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

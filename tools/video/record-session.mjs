@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Records a walkthrough of a finished OpenClaw web chat session (page only, 1920x1080):
 // opens the session, scrolls from the prompt to the final answer, holds on the TPS readout.
-//   node src/record-session.mjs --path /chat/main/<session-slug> [--scroll 14] [--hold 7] [--out renders/x.mp4]
+//   node tools/video/record-session.mjs --path /chat/main/<session-slug> [--scroll 14] [--hold 7] [--out renders/x.mp4]
 import { spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { ROOT, config } from './config.mjs';
+import { ROOT, config } from '../../src/config.mjs';
 
 const args = process.argv.slice(2);
 const opt = (n, d) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : d; };

@@ -2,17 +2,17 @@
 // Adds an ElevenLabs voiceover to the demo videos: each narration line is synthesized,
 // fitted to its time window (sped up at most 15% if it runs long), placed at its start
 // time, and mixed into an AAC track muxed onto the video (video stream copied untouched).
-//   node src/voiceover.mjs [film|santa ...]
+//   node tools/video/voiceover.mjs [film|santa ...]
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
-import { ROOT } from './config.mjs';
+import { ROOT } from '../../src/config.mjs';
 
-const cfg = JSON.parse(readFileSync(join(ROOT, 'voice', 'narration.json'), 'utf8'));
+const cfg = JSON.parse(readFileSync(join(ROOT, 'tools', 'video', 'narration.json'), 'utf8'));
 const KEY = (readFileSync(join(ROOT, '.env'), 'utf8').match(/^ELEVENLABS_API_KEY=(.+)$/m) || [])[1]?.trim();
 if (!KEY) { console.error('ELEVENLABS_API_KEY missing from .env'); process.exit(1); }
 const which = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(cfg.videos);
-const dir = join(ROOT, 'voice', 'lines');
+const dir = join(ROOT, 'out', 'voice-lines');
 mkdirSync(dir, { recursive: true });
 const dur = (f) => Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]).toString().trim());
 

@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 // Proves a Santa run wasn't mocked: every product in Kimi's final answer must appear,
 // with the same price, in the live web_fetch results recorded in that run's transcript.
-//   node src/verify-run.mjs <session-id-prefix>
+//   node tools/santa/verify-run.mjs <session-id-prefix>
 import zlib from 'node:zlib';
 import { DatabaseSync } from 'node:sqlite';
+import { join } from 'node:path';
+import { homedir } from 'node:os';
 
-const DB = 'D:/speedpatch/state/agents/main/agent/openclaw-agent.sqlite';
+const DB = join(process.env.OPENCLAW_STATE_DIR || join(homedir(), '.openclaw'), 'agents', 'main', 'agent', 'openclaw-agent.sqlite');
 const prefix = process.argv[2];
 const db = new DatabaseSync(DB, { readOnly: true });
 const rows = db.prepare('select event_json, event_zstd from transcript_events where session_id like ? order by seq').all(prefix + '%');
