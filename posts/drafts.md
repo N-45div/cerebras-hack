@@ -19,12 +19,10 @@ Every URL is saved. Nothing is truly lost. Except your dignity.
 **Reply 1 (the link goes in the reply, not the main post):**
 Code + OpenClaw skill: https://github.com/N-45div/cerebras-hack
 
-**Reply 2 (attach `renders/race-clip.mp4`):**
-Same 8 tabs, same prompt, two machines.
-My laptop's RTX 5050 (Qwen3-8B): 48 tok/s.
-Kimi K3.1 Pro on Cerebras: 415 tok/s. 8.6x faster decode, on a model far bigger than anything my laptop can hold.
+(No GPU comparison: organizers said comparisons must be Kimi K3 Pro vs Kimi K3 Pro only.
+`renders/race-clip.mp4` compares Qwen3-8B, so it is NOT for posting.)
 
-**Reply 3 (the verdict, quote it):**
+**Reply 2 (the verdict, quote it):**
 Kimi's diagnosis of my browser: "Chronic tabular hypertrophy with acute Wikipedia-induced curiosity cascades."
 
 ---
@@ -43,7 +41,7 @@ Built for the Kimi K3.1 Pro hackathon. Tab Bankruptcy is an OpenClaw skill: you 
 
 The run in the video: 135 real tabs, 519,907 words (36.4 hours of reading), done in 38.9 s. Kimi decoded at 336 tok/s mean per call during peak hackathon load (the 14 s queue wait at the start is shown at 7x and labelled).
 
-Same prompt, my laptop GPU vs Cerebras: RTX 5050 + Qwen3-8B 48 tok/s, Kimi K3.1 Pro on Cerebras 415 tok/s (8.6x), decode time measured server-side on both.
+Why the speed matters: 135 tabs is ~70K tokens of reading plus a judged, roasted verdict for every one. At typical GPU-serving speeds that's a coffee break; on Cerebras the tabs close while you watch.
 
 Its diagnosis of me: "Chronic tabular hypertrophy with acute Wikipedia-induced curiosity cascades."
 
