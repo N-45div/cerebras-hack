@@ -49,36 +49,25 @@ Code: https://github.com/N-45div/cerebras-hack
 
 ---
 
-## 3. Discord #share-your-demo (Speed Bounty), attach the Santa video
+## 3. Discord #share-your-demo (Speed Bounty), deadline Sun Nov 22, 6:00 PM
 
-(attach `renders/santa-session-477.mp4`: the finished session with the 477 readout.
-Fallback: `renders/santa-bounty-391.mp4`, the run recorded live; its gifts are listed under "391 run" below.)
+Attach `renders/santa-bounty-423-final.mp4` (41 s, recorded live; the waiting is sped up 3x and labelled).
 
-Speed Bounty entry: 477 TPS
+Speed Bounty entry: 423 TPS
 
-TPS: 477 tok/s mean · 760 p90, the server-side readout from the official speed patch, on screen in the video.
-Cerebras was overloaded, so OpenClaw paused the run on 429s and resumed it automatically once capacity came back; Kimi then finished the list in 7 seconds.
+**Project Name:** Santa's Speedy Shopper (fast path)
+**Team Members:** X: @YOUR_X_HANDLE · Reddit: u/YOUR_REDDIT_HANDLE
+**Project Description:** OpenClaw with Kimi K3.1 Pro on Cerebras shops like a speedrunner: in a single turn it queries five real stores' own live Shopify product search in parallel, then picks one available gift under $100 from each and copies back the exact title, price and product link. Nothing is hard-coded: the stores, queries and products are Kimi's own choices from live results. Copying structured results instead of writing prose keeps Cerebras's decode fast.
+**Demo Video:** attached (41 s, live run)
+**GitHub Repository:** https://github.com/N-45div/cerebras-hack
 
-The 5 gifts (software engineer who has everything, each under $100):
-1. Metrolog Ruler · Craighill · $98.00 · https://www.craighill.co/products/metrolog-ruler
-2. Hybrid Laptop Sleeve v2 · Orbitkey · $59.92 · https://www.orbitkey.com/products/hybrid-laptop-sleeve-v2
-3. Keychron M6 Wireless Mouse · Keychron · from $38.24 · https://www.keychron.com/products/keychron-m6-wireless-mouse
-4. Valet Tray (Maple, Medium) · Ugmonk · $79.00 · https://ugmonk.com/products/valet-tray-maple-medium
-5. Cubelet · TOM BIHN · $25.00 · https://www.tombihn.com/products/cubelet
+**TPS:** 423 tok/s mean · 569 p90, the server-side readout from the official speed patch (OpenClaw 8b18b55 + patch, Kimi K3.1 Pro on Cerebras, reasoning low), on screen in the video.
 
----- 391 run (recorded live, fallback) ----
+**The 5 gifts** (software engineer who has everything, each under $100):
+1. Analog Daily Focus Kit (Walnut) · Ugmonk · $69.00 · https://ugmonk.com/products/analog-starter-kit
+2. Key Organizer Pro Leather · Orbitkey · $48.67 · https://orbitkey.com/products/key-organiser-pro
+3. Metrolog Ruler · Craighill · $98.00 · https://craighill.co/products/metrolog-ruler
+4. Keychron Q1 QMK Custom Mechanical Keyboard (Version 2) · Keychron · $59.99 · https://keychron.com/products/keychron-q1
+5. AeroPress Coffee Maker - Go Plus · AeroPress · $89.95 · https://aeropress.com/products/aeropress-go-plus
 
-Speed Bounty entry: 391 TPS
-
-Project: Santa's Speedy Shopper, fast path. OpenClaw (8b18b55 + official speed patch) with Kimi K3.1 Pro on Cerebras, reasoning low. Instead of scraping search pages, Kimi queries five real stores' own live Shopify product search in parallel in one turn, picks one available gift under $100 from each, and replies with the list. Nothing is hard-coded: stores, queries and products are Kimi's choices from live results.
-
-TPS: 391 tok/s mean · 476 p90, the server-side readout from the speed patch (shown in the video). The middle of the video is fast-forwarded 12x and labelled: it's Cerebras queue retries during the overload.
-
-The 5 gifts (software engineer who has everything, each under $100):
-1. Keychron Desk Mat · Keychron · $19.99 · https://www.keychron.com/products/keychron-desk-mat
-2. Nest v2 · Orbitkey · $93.67 · https://www.orbitkey.com/products/nest-v2
-3. Slim Pouch 2 · Aer · $49.00 · https://www.aersf.com/products/slim-pouch-2
-4. Valet Tray (Maple, Medium) · Ugmonk · $79.00 · https://ugmonk.com/products/valet-tray-maple-medium
-5. AeroPress Coffee Maker, Original · AeroPress · $39.95 · https://aeropress.com/products/aeropress-coffee-maker
-
-GitHub: https://github.com/N-45div/cerebras-hack
+(If the watcher records a faster live run before the deadline, swap in its video, TPS and gifts.)
