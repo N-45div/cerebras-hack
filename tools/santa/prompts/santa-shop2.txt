@@ -1,0 +1,8 @@
+Santa's Speedy Shopper: find 5 Christmas gifts for a software engineer who has everything, each under $100, from 5 different real online stores. You choose the gift ideas and the search terms.
+
+Decide quickly. Call find_products once with 6 search queries of your own choosing, maxPrice 100, currency USD, onePerStore true. If fewer than 5 products come back, call it once more with new queries.
+
+Then reply, copying titles, stores, prices and links character for character from the tool results:
+
+Santa's picks: exactly 5 lines, one product from each of 5 different stores:
+N. **title** — store — price — link

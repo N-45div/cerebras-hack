@@ -44,8 +44,20 @@ function priceOf(p) {
   return `${typeof v === 'number' ? v.toFixed(2) : v}${cur ? ' ' + cur : ''}`;
 }
 
-async function findProducts(queries, perQuery) {
+// Numeric amount and currency of a product, or null when the page doesn't state them clearly.
+function amountOf(p) {
+  const v = p?.price ?? p?.offers?.price ?? p?.salePrice;
+  const raw = typeof v === 'object' && v ? (v.amount ?? v.value ?? v.price) : v;
+  const n = typeof raw === 'number' ? raw : Number(String(raw ?? '').replace(/[^0-9.]/g, ''));
+  const cur = String((typeof v === 'object' && v ? (v.currency ?? v.currencyCode) : null) ?? p?.currency ?? p?.priceCurrency ?? '').toUpperCase();
+  return Number.isFinite(n) && n > 0 ? { n, cur } : null;
+}
+const inStock = (s) => s == null || /in_?stock|instock|true|available/i.test(String(s)) && !/out|sold|false|unavailable/i.test(String(s));
+
+// maxPrice / currency / onePerStore are the agent's own constraints, applied here mechanically.
+async function findProducts(queries, perQuery, { maxPrice, currency = 'USD', onePerStore = true } = {}) {
   const out = [];
+  const usedStores = new Set();
   for (const q of queries) {
     out.push(`Query: ${q}`);
     let found = 0;
@@ -53,19 +65,24 @@ async function findProducts(queries, perQuery) {
     try { results = (await call('/web/search', { query: q, numResults: 8 })).results || []; } catch (e) { out.push(`  (search failed: ${e.message})`); continue; }
     for (const r of results) {
       if (found >= perQuery) break;
+      const store = new URL(r.url).hostname.replace(/^www\./, '');
+      if (onePerStore && usedStores.has(store)) continue;
       try {
         const page = await call('/web/scrape', { url: r.url, formats: { product: true } });
         const d = page?.product?.data;
         const p = d?.isProductPage ? d.product : null;
-        const price = p && priceOf(p);
-        if (!p || !price || !p.name) continue;
-        const store = new URL(r.url).hostname.replace(/^www\./, '');
+        const a = p && amountOf(p);
+        if (!p || !p.name || !a) continue;
+        if (currency && a.cur && a.cur !== currency.toUpperCase()) continue;
+        if (maxPrice != null && a.n > maxPrice) continue;
         const stock = p.availability ?? p.inStock ?? p.available;
-        out.push(`- ${p.name} | ${store} | ${price} | ${stock == null ? 'stock n/a' : String(stock)} | ${r.url.split('#')[0]}`);
+        if (!inStock(stock)) continue;
+        out.push(`- ${p.name} | ${store} | $${a.n.toFixed(2)} ${a.cur || currency} | ${r.url.split('#')[0]}`);
+        usedStores.add(store);
         found++;
       } catch (e) { log('scrape failed', r.url, e.message); }
     }
-    if (!found) out.push('  (no priced product pages found)');
+    if (!found) out.push('  (nothing matching found)');
   }
   return out.join('\n');
 }
@@ -78,7 +95,10 @@ const TOOL = {
     type: 'object',
     properties: {
       queries: { type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 8, description: 'Your search queries, one per gift idea.' },
-      perQuery: { type: 'integer', minimum: 1, maximum: 5, default: 2, description: 'Products to return per query.' },
+      perQuery: { type: 'integer', minimum: 1, maximum: 5, default: 1, description: 'Products to return per query.' },
+      maxPrice: { type: 'number', description: 'Your budget: skip products priced above this.' },
+      currency: { type: 'string', default: 'USD', description: 'Only keep prices in this currency.' },
+      onePerStore: { type: 'boolean', default: true, description: 'At most one product per store, so results come from different stores.' },
     },
     required: ['queries'],
   },
@@ -99,7 +119,8 @@ process.stdin.on('data', async (chunk) => {
     else if (method === 'tools/call') {
       try {
         const a = params?.arguments || {};
-        const text = await findProducts((a.queries || []).slice(0, 8), Math.min(5, Math.max(1, a.perQuery || 2)));
+        const text = await findProducts((a.queries || []).slice(0, 8), Math.min(5, Math.max(1, a.perQuery || 1)),
+          { maxPrice: a.maxPrice, currency: a.currency || 'USD', onePerStore: a.onePerStore !== false });
         send({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text }] } });
       } catch (e) { send({ jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: `error: ${e.message}` }], isError: true } }); }
     } else if (method === 'ping') send({ jsonrpc: '2.0', id, result: {} });
