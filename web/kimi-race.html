@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kimi vs Kimi</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0a0a0d; --panel:#131318; --line:#24242c; --text:#ececf1; --dim:#8a8a96; --hot:#ff5a36; --ms:#6c8cff; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1920px; height: 1080px; background: var(--bg); color: var(--text); font-family: Inter, sans-serif; overflow: hidden; }
+  header { padding: 40px 64px 14px; }
+  h1 { font-size: 52px; font-weight: 800; letter-spacing: -1px; }
+  h1 .hot { color: var(--hot); }
+  .sub { color: var(--dim); font-size: 22px; margin-top: 8px; }
+  .lanes { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; padding: 14px 64px 0; height: 800px; }
+  .lane { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 24px 30px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+  .lane.cb { border-color: #ff5a3655; box-shadow: 0 0 60px #ff5a3618; }
+  .who { font-size: 24px; font-weight: 700; }
+  .who small { display: block; color: var(--dim); font-weight: 400; font-size: 17px; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+  .nums { display: flex; gap: 34px; margin: 18px 0 14px; font-family: 'JetBrains Mono', monospace; }
+  .num b { display: block; font-size: 54px; font-weight: 700; line-height: 1; }
+  .num span { color: var(--dim); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+  .cb .num.rate b { color: var(--hot); }
+  .ms .num.rate b { color: var(--ms); }
+  .state { font: 600 16px 'JetBrains Mono', monospace; color: var(--dim); height: 22px; margin-bottom: 8px; }
+  .out { flex: 1; background: #0d0d11; border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; font: 14.5px/1.45 'JetBrains Mono', monospace; color: #c9c9d3; white-space: pre-wrap; word-break: break-word; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+  .done { position: absolute; left: 30px; right: 30px; bottom: 30px; padding: 24px 28px; border-radius: 14px; font-size: 38px; font-weight: 800; display: none; align-items: baseline; gap: 16px; }
+  .cb .done { background: var(--hot); color: #fff; }
+  .ms .done { background: #18203f; color: #aebdff; border: 1px solid #6c8cff88; }
+  .done small { font-size: 21px; font-weight: 600; opacity: .9; }
+  .lane.finished .done { display: flex; }
+  footer { position: absolute; bottom: 22px; left: 64px; right: 64px; color: var(--dim); font-size: 16px; display: flex; justify-content: space-between; gap: 30px; }
+  #x { color: var(--hot); font-weight: 800; font-size: 24px; opacity: 0; transition: opacity .4s; white-space: nowrap; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Same Kimi K3.1 Pro. Same 8 tabs. <span class="hot">Two clouds.</span></h1>
+  <div class="sub">Tab Bankruptcy's clerk prompt: read each tab, file it, judge it, roast it. Real streams, replayed at the times each chunk arrived.</div>
+</header>
+<div class="lanes">
+  <div class="lane cb" id="A">
+    <div class="who" id="Awho"></div>
+    <div class="nums"><div class="num rate"><b id="Arate">0</b><span>tokens / sec</span></div><div class="num"><b id="Atok">0</b><span>tokens</span></div><div class="num"><b id="Aclock">0.0s</b><span>streaming</span></div></div>
+    <div class="state" id="Astate"></div>
+    <div class="out" id="Aout"></div>
+    <div class="done" id="Adone"></div>
+  </div>
+  <div class="lane ms" id="B">
+    <div class="who" id="Bwho"></div>
+    <div class="nums"><div class="num rate"><b id="Brate">0</b><span>tokens / sec</span></div><div class="num"><b id="Btok">0</b><span>tokens</span></div><div class="num"><b id="Bclock">0.0s</b><span>streaming</span></div></div>
+    <div class="state" id="Bstate"></div>
+    <div class="out" id="Bout"></div>
+    <div class="done" id="Bdone"></div>
+  </div>
+</div>
+<footer><span id="method"></span><span id="x"></span></footer>
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => Math.round(n).toLocaleString('en-US');
+(async () => {
+  const R = await (await fetch('/out/kimi-race.json', { cache: 'no-store' })).json();
+  const right = new URLSearchParams(location.search).get('vs') || 'moonshot-highspeed';
+  const L = { A: R.lanes.cerebras, B: R.lanes[right] };
+  for (const k of ['A', 'B']) {
+    $(k + 'who').innerHTML = `${L[k].label}<small>${L[k].model}</small>`;
+    L[k].total = L[k].rep.chunks.length; L[k].dur = L[k].rep.decodeS;
+  }
+  $('method').textContent = `Streamed, temperature 1. Speed = (tokens − 1) / (last − first token time), median of ${R.runs} runs. Time to first token not shown (Cerebras ~${L.A.medianTtftS}s queue during the hackathon, Moonshot ~${L.B.medianTtftS}s).`;
+  await document.fonts.ready;
+  if (location.search.includes('rec')) while (!window.__START__) await new Promise((r) => setTimeout(r, 30));
+  else await new Promise((r) => setTimeout(r, 1500));
+  const t0 = performance.now();
+  const fin = new Set();
+  function frame() {
+    const t = performance.now() - t0;
+    for (const k of ['A', 'B']) {
+      const rep = L[k].rep; const ch = rep.chunks;
+      let i = 0; while (i < ch.length && ch[i].t <= t) i++;
+      const text = ch.slice(0, i).map((c) => c.c).join('');
+      $(k + 'out').textContent = text.slice(-2600);
+      const f = ch.length ? i / ch.length : 0;
+      $(k + 'tok').textContent = fmt(rep.tokens * f);
+      $(k + 'rate').textContent = fmt(i ? rep.tps : 0);
+      $(k + 'clock').textContent = (Math.min(t, rep.decodeS * 1000) / 1000).toFixed(1) + 's';
+      const thinking = i < ch.length && i > 0 && !text.length;
+      $(k + 'state').textContent = i === 0 ? '' : thinking ? `thinking… ${fmt(rep.tokens * f)} tokens` : i < ch.length ? 'writing the verdicts' : '';
+      if (i >= ch.length && !fin.has(k)) {
+        fin.add(k);
+        $(k + 'done').innerHTML = `DONE in ${rep.decodeS.toFixed(1)}s <small>${fmt(rep.tokens)} tokens · ${fmt(rep.tps)} tok/s (median ${fmt(L[k].medianTps)})</small>`;
+        $(k).classList.add('finished');
+      }
+    }
+    if (fin.size < 2) setTimeout(frame, 16);
+    else {
+      $('x').textContent = `${(L.A.medianTps / L.B.medianTps).toFixed(1)}× faster on Cerebras`;
+      $('x').style.opacity = 1;
+      window.__DONE__ = true;
+    }
+  }
+  frame();
+})();
+</script>
+</body>
+</html>

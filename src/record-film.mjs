@@ -67,7 +67,12 @@ const ff = spawn('ffmpeg', ['-y', '-f', 'image2pipe', '-framerate', String(FPS),
   '-vf', 'scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=0x0a0a0d',
   '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '17', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', outFile],
   { stdio: ['pipe', 'ignore', 'pipe'] });
+// Drain ffmpeg's log: an unread stderr pipe fills up and blocks the encoder mid-take.
+let ffErr = '';
+ff.stderr.on('data', (d) => { ffErr = (ffErr + d).slice(-3000); });
 const ffDone = new Promise((r) => ff.on('close', r));
+// If this process is stopped, still let ffmpeg finalize the file.
+for (const sig of ['SIGINT', 'SIGTERM']) process.on(sig, () => { try { ff.stdin.end(); } catch {} setTimeout(() => process.exit(1), 4000); });
 const t0 = Date.now();
 const now = () => +((Date.now() - t0) / 1000).toFixed(2);
 let written = 0;

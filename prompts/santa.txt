@@ -2,7 +2,7 @@ Santa's Speedy Shopper: find 5 Christmas gifts for a software engineer who has e
 
 Fast path: many brand stores run Shopify and expose a live product search at https://STORE/search/suggest.json?q=QUERY&resources[type]=product&resources[limit]=6&country=US&currency=USD
 
-In your first turn, call web_fetch on 5 different stores' search URLs at once (pick stores you know sell great desk, tech or everyday-carry gifts). These results are live store data, so no extra verification is needed; only if a store fails, swap in another store in one more turn.
+In your first turn, call web_fetch on 10 different stores' search URLs at once (pick stores you know sell great desk, tech, coffee or everyday-carry gifts). These results are live store data, so no extra verification is needed.
 
-Then reply with Santa's checked list: a markdown table of every product the searches returned, copying the values exactly (columns: # | title | store | price USD | available | link as https://STORE/products/handle). Then a line "Santa's picks:" and exactly 5 lines, one available product under $100 per store:
+Then reply with Santa's checked list: a markdown table of every product the searches returned, copying the values exactly (columns: # | title | store | price USD | available | link as https://STORE/products/handle). Then a line "Santa's picks:" and exactly 5 lines, one available product under $100 from 5 different stores:
 N. **product title** — store — $price USD — https://STORE/products/handle
