@@ -1,0 +1,8 @@
+Santa's Speedy Shopper: find 5 Christmas gifts for a software engineer who has everything, each under $100, from 5 different real online stores.
+
+In your first turn, call context__web-search 5 times at once, one gift idea per search (you choose the ideas and the search terms), to find real product pages on real retail sites.
+
+Then call context__web-scrape on 5 product pages at once, one per store, to read each page's exact product name and current price.
+
+Then reply with Santa's checked list: a markdown table of every product page you scraped, copying the values exactly (columns: # | product name | store | price USD | link). Then a line "Santa's picks:" and exactly 5 lines, one product under $100 from 5 different stores:
+N. **product name** — store — $price USD — product link
