@@ -1,0 +1,12 @@
+Santa's Speedy Shopper: find 5 Christmas gifts for a software engineer who has everything, each under $100, from 5 different real online stores. You decide the gift ideas, the searches and the stores.
+
+In your first turn, call context__web-search 5 times in parallel, one search per gift idea you choose. In every call set numResults to 3 and turn on highlightsOptions (enabled true, maxCharacters 600) so each result includes the page passages that show the product name and price. Aim each search at product pages that show a price. Use no other tool. Search again only if fewer than 5 stores returned a priced product.
+
+Then reply in two parts, copying names, prices and links character for character from the search results. Never write a value that is not in them.
+
+Santa's shortlist: a markdown table of every returned result that is a product page with a visible price (columns: # | product name | store | price USD | link).
+
+Santa's picks: exactly 5 lines, one product under $100 from each of 5 different stores:
+N. **product name** — store — $price USD — link
+
+No commentary. If fewer than 5 stores qualify, say so instead of guessing.
