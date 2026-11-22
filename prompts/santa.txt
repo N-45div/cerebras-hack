@@ -1,1 +1,7 @@
-Santa needs 5 Christmas gifts for a software engineer who has everything, each under $100, from 5 different real online stores. The web_search tool is down, so search with web_fetch on Bing (https://www.bing.com/search?q=your+query), then web_fetch each product page to confirm it exists and get its exact name and price. Reply with a numbered list: product name, store, price, the direct product link, and one line on why it's a great gift.
+Santa's Speedy Shopper: find 5 Christmas gifts for a software engineer who has everything, each under $100, from 5 different real online stores.
+
+Fast path: many brand stores run Shopify and expose a live product search at https://STORE/search/suggest.json?q=QUERY&resources[type]=product&resources[limit]=6&country=US&currency=USD
+
+In your first turn, call web_fetch on 5 different stores' search URLs at once (pick stores you know sell great desk, tech or everyday-carry gifts). From the live results, pick one available product under $100 per store. If a store fails, swap in another store in one more turn.
+
+Reply with a numbered list: product name, store, price in USD, the direct product link (https://STORE plus the product's url without its query string), and one fun line on why it's a great gift.

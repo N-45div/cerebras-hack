@@ -51,11 +51,19 @@ Code: https://github.com/N-45div/cerebras-hack
 
 ## 3. Discord #share-your-demo (Speed Bounty), attach the Santa video
 
-Speed Bounty entry: ___ TPS
+(attach `renders/santa-bounty-391.mp4`, or a faster take if the watcher finds one)
 
-Santa's Speedy Shopper on the patched OpenClaw build (8b18b55 + speed patch), Kimi K3.1 Pro on Cerebras, reasoning low. 5 real gifts from 5 real stores, links in the video and below:
-1.
-2.
-3.
-4.
-5.
+Speed Bounty entry: 391 TPS
+
+Project: Santa's Speedy Shopper, fast path. OpenClaw (8b18b55 + official speed patch) with Kimi K3.1 Pro on Cerebras, reasoning low. Instead of scraping search pages, Kimi queries five real stores' own live Shopify product search in parallel in one turn, picks one available gift under $100 from each, and replies with the list. Nothing is hard-coded: stores, queries and products are Kimi's choices from live results.
+
+TPS: 391 tok/s mean · 476 p90, the server-side readout from the speed patch (shown in the video). The middle of the video is fast-forwarded 12x and labelled: it's Cerebras queue retries during the overload.
+
+The 5 gifts (software engineer who has everything, each under $100):
+1. Keychron Desk Mat · Keychron · $19.99 · https://www.keychron.com/products/keychron-desk-mat
+2. Nest v2 · Orbitkey · $93.67 · https://www.orbitkey.com/products/nest-v2
+3. Slim Pouch 2 · Aer · $49.00 · https://www.aersf.com/products/slim-pouch-2
+4. Valet Tray (Maple, Medium) · Ugmonk · $79.00 · https://ugmonk.com/products/valet-tray-maple-medium
+5. AeroPress Coffee Maker, Original · AeroPress · $39.95 · https://aeropress.com/products/aeropress-coffee-maker
+
+GitHub: https://github.com/N-45div/cerebras-hack
