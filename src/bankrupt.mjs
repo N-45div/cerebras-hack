@@ -41,7 +41,7 @@ export const CATEGORIES = [
 
 export const SYS_TABS = `You are the clerk of Tab Bankruptcy Court. A person kept far too many browser tabs open.
 For each tab you get its index, title, URL and an excerpt of the page text. Return ONLY JSON:
-{"tabs":[{"i":<index>,"category":"<one category from the list>","tldr":"<=18 words: what the page ACTUALLY says (be accurate)>","verdict":"keep"|"skim"|"let go","roast":"<=12 words: a playful jab at the person who hoarded this tab"}]}
+{"tabs":[{"i":<index>,"title":"<the tab title, copied exactly>","url":"<the tab URL, copied exactly>","category":"<one category from the list>","tldr":"<=10 words: what the page ACTUALLY says (be accurate)>","verdict":"keep"|"skim"|"let go","roast":"<=8 words: a playful jab at the person who hoarded this tab"}]}
 Categories: ${CATEGORIES.map((c) => c[0]).join(' | ')}
 Verdicts: "keep" = genuinely worth reading in full; "skim" = 2 minutes max; "let go" = they will never read it, it is stale, a homepage, a login wall or an error page.
 Be funny but never mean-spirited. No markdown.`;
@@ -155,7 +155,7 @@ async function run() {
     let tps = 0;
     try {
       const r = await chat([{ role: 'system', content: SYS_TABS }, { role: 'user', content: user }],
-        { json: true, maxTokens: 900 + 220 * batch.length, temperature: 0.8 });
+        { json: true, maxTokens: 900 + 320 * batch.length, temperature: 0.8 });
       tps = r.tps;
       parsed = parseJson(r.text).tabs || [];
     } catch (e) {
