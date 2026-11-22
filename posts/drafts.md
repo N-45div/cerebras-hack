@@ -51,23 +51,23 @@ Code: https://github.com/N-45div/cerebras-hack
 
 ## 3. Discord #share-your-demo (Speed Bounty), deadline Sun Nov 22, 6:00 PM
 
-Attach `renders/santa-bounty-423-final.mp4` (41 s, recorded live; the waiting is sped up 3x and labelled).
+Attach `renders/santa-bounty-601.mp4` (47 s, recorded live; the middle is sped up 15x and labelled).
 
-Speed Bounty entry: 423 TPS
+Speed Bounty entry: 601 TPS
 
-**Project Name:** Santa's Speedy Shopper (fast path)
+**Project Name:** Santa's Speedy Shopper
 **Team Members:** X: @YOUR_X_HANDLE · Reddit: u/YOUR_REDDIT_HANDLE
-**Project Description:** OpenClaw with Kimi K3.1 Pro on Cerebras shops like a speedrunner: in a single turn it queries five real stores' own live Shopify product search in parallel, then picks one available gift under $100 from each and copies back the exact title, price and product link. Nothing is hard-coded: the stores, queries and products are Kimi's own choices from live results. Copying structured results instead of writing prose keeps Cerebras's decode fast.
-**Demo Video:** attached (41 s, live run)
+**Project Description:** OpenClaw with Kimi K3.1 Pro on Cerebras shops the open web for Santa: Kimi runs five web searches at once through context.dev, scrapes five real product pages in parallel to read each exact name and price, and answers with a checked list copied straight from those pages. Nothing is hard-coded: every gift, price and link comes from live search and scrape results during the run. Copying verified data instead of writing prose is what keeps Cerebras's decode fast.
+**Demo Video:** attached (47 s, live run)
 **GitHub Repository:** https://github.com/N-45div/cerebras-hack
 
-**TPS:** 423 tok/s mean · 569 p90, the server-side readout from the official speed patch (OpenClaw 8b18b55 + patch, Kimi K3.1 Pro on Cerebras, reasoning low), on screen in the video.
+**TPS:** 601 tok/s mean · 1,241 p90, the server-side readout from the official speed patch (OpenClaw 8b18b55 + patch, Kimi K3.1 Pro on Cerebras, reasoning low), on screen in the video.
 
 **The 5 gifts** (software engineer who has everything, each under $100):
-1. Analog Daily Focus Kit (Walnut) · Ugmonk · $69.00 · https://ugmonk.com/products/analog-starter-kit
-2. Key Organizer Pro Leather · Orbitkey · $48.67 · https://orbitkey.com/products/key-organiser-pro
-3. Metrolog Ruler · Craighill · $98.00 · https://craighill.co/products/metrolog-ruler
-4. Keychron Q1 QMK Custom Mechanical Keyboard (Version 2) · Keychron · $59.99 · https://keychron.com/products/keychron-q1
-5. AeroPress Coffee Maker - Go Plus · AeroPress · $89.95 · https://aeropress.com/products/aeropress-go-plus
+1. Keycap Set for Mechanical Keyboard · Amazon · $16.99 · https://www.amazon.com/Keycap-Set-for-Mechanical-Keyboard/dp/B07ZBVTWHP
+2. The Container Store Artisan Rattan Cane Desktop Organizer · The Container Store · $15.99 · https://www.containerstore.com/s/office/desktop-collections/artisan-rattan-cane-desktop-collection/the-container-store-artisan-rattan-cane-desktop-organizer/123d?productId=11023414
+3. Hario Range Server · Joe Coffee Company · $25.00 · https://joecoffeecompany.com/products/hario-range-server
+4. Software Engineer Gifts Coffee Mug · Etsy · $13.00+ · https://www.etsy.com/listing/773119801/software-engineer-gifts-engineer-mugs
+5. Anker Nano Power Bank (5K, MagGo, Slim) · Anker · $42.99 · https://www.anker.com/products/a1665-5k-ultra-slim-qi2-power-bank
 
-(If the watcher records a faster live run before the deadline, swap in its video, TPS and gifts.)
+(Backup entry if needed: renders/santa-bounty-423-final.mp4, 423 TPS, Shopify fast path.)

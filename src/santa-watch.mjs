@@ -13,6 +13,7 @@ const QUIET = Number(opt('--quiet', 6));
 const TRIES = Number(opt('--tries', 6));
 const HOURS = Number(opt('--hours', 12));
 const TARGET = Number(opt('--target', 0)); // keep recording until a successful take's mean tok/s reaches this
+const PROMPT_FILE = opt('--prompt', join(ROOT, 'prompts', 'santa.txt'));
 const PORT = '18799';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const log = (...a) => console.log(new Date().toLocaleTimeString('en-GB'), ...a);
@@ -68,7 +69,7 @@ while (Date.now() < end && tries < TRIES) {
     const out = `renders/santa-take-${Date.now()}.mp4`;
     log(`quiet enough, attempt ${tries}: recording ${out}`);
     await newSession();
-    const rec = spawnSync(process.execPath, [join(ROOT, 'src', 'record-openclaw.mjs'), '--prompt', join(ROOT, 'prompts', 'santa.txt'), '--out', out, '--hold', '8', '--max', '900'], { encoding: 'utf8' });
+    const rec = spawnSync(process.execPath, [join(ROOT, 'src', 'record-openclaw.mjs'), '--prompt', PROMPT_FILE, '--out', out, '--hold', '8', '--max', '900'], { encoding: 'utf8' });
     log((rec.stdout || '').trim().split('\n').pop());
     const r = await result();
     const tps = /([\d,]+) tok\/s mean · ([\d,]+) p90/.exec(r.text);
