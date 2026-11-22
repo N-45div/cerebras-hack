@@ -6,3 +6,4 @@ renders/
 *.log
 .cache/
 chrome-profile/
+voice/lines/
