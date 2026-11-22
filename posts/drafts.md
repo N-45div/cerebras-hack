@@ -4,26 +4,25 @@ All numbers below were measured in the runs shown in the videos.
 
 ---
 
-## 1. X: main post (attach `renders/tab-bankruptcy-film.mp4` as native video)
+## 1. X: main post (attach `renders/tab-bankruptcy-film-final.mp4` as native video)
 
 I had 135 tabs open. I was never going to read them.
 
-So I built Tab Bankruptcy: tell OpenClaw "declare tab bankruptcy" and Kimi K3.1 Pro on Cerebras reads every tab, files it, roasts you, and closes it.
+So I told OpenClaw "declare tab bankruptcy" and Kimi K3.1 Pro on Cerebras read every tab, filed it, roasted me, and closed it.
 
-135 tabs. 519,907 words. 36 hours of reading. Done in 39 seconds.
+135 tabs. 439,529 words. 30 hours of reading. Done in 12.5 seconds.
 
-Every URL is saved. Nothing is truly lost. Except your dignity.
+Same Kimi on Moonshot's own GPUs: 4.2× slower.
 
 @Cerebras @Kimi_Moonshot #KimiOnCerebras
 
-**Reply 1 (the link goes in the reply, not the main post):**
+**Reply (the link goes in the reply, not the main post):**
 Code + OpenClaw skill: https://github.com/N-45div/cerebras-hack
 
-(No GPU comparison: organizers said comparisons must be Kimi K3 Pro vs Kimi K3 Pro only.
-`renders/race-clip.mp4` compares Qwen3-8B, so it is NOT for posting.)
+Kimi's diagnosis of my browser: "Chronic tabular accumulation with acute Wikipedia metastasis."
 
-**Reply 2 (the verdict, quote it):**
-Kimi's diagnosis of my browser: "Chronic tabular hypertrophy with acute Wikipedia-induced curiosity cascades."
+(All numbers from the run in the film: 135 real tabs, 12.5 s, 350 tok/s mean per call, 1,573 tok/s aggregate.
+Kimi vs Kimi: 346 vs 83 tok/s median streamed, Cerebras vs Moonshot kimi-k3.1-pro-highspeed, src/kimi-race.mjs.)
 
 ---
 
