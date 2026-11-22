@@ -30,6 +30,8 @@ for (const l of picks) {
   const hasName = toolN.includes(norm(name)) || norm(name).split(' ').filter((w) => w.length > 3).every((w) => toolN.includes(w));
   const hasPrice = price && (toolN.includes(price) || toolN.includes(price.replace(/\.00$/, '')));
   const hasLink = toolN.includes(norm(linkCore));
-  console.log(`${hasName && hasPrice && hasLink ? 'VERIFIED' : 'CHECK   '}  name:${hasName} price $${price}:${hasPrice} link:${hasLink}  ${name.slice(0, 50)}`);
+  const listing = /\/(collections?|category|categories|shop|search|c)\/(?!.*\/products?\/)|[?&](q|query|search)=/i.test(new URL(link).pathname + new URL(link).search) && !/\/products?\/|\/dp\/|\/listing\/|\/item\/|\/ip\//i.test(link);
+  if (listing) console.log('NOT A PRODUCT PAGE  ' + link);
+  console.log(`${hasName && hasPrice && hasLink && !listing ? 'VERIFIED' : 'CHECK   '}  name:${hasName} price $${price}:${hasPrice} link:${hasLink}  ${name.slice(0, 50)}`);
   console.log(`          ${link}`);
 }

@@ -10,5 +10,5 @@ Step 3: only if fewer than 5 stores returned a product with a USD price under $1
 
 As soon as 5 stores qualify, reply at once with no further thinking; everything needed is already in the scrape results. Reply with exactly this and nothing else:
 Santa's checked list: a markdown table with one row per scraped page that returned a product name and a USD price, values copied exactly (columns: # | product name | store | price USD | link).
-Santa's picks: exactly 5 lines, one product under $100 from each of 5 different stores:
+Santa's picks: exactly 5 lines, 5 different gift ideas, one product under $100 from each of 5 different stores, each link the product's own page (never a category, collection, search or shop page; if a scraped page was one of those, use a spare):
 N. **product name** — store — $price USD — product link
