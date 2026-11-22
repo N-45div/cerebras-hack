@@ -58,7 +58,7 @@ while (Date.now() < end && tries < TRIES) {
   const p = probeWait();
   log(p ? `probe: queue ~${p.wait}s, decode ${p.tps} tok/s` : 'probe failed (429s)');
   // Shopify rate-limits per IP across all stores; a take while it's throttling us wastes a run.
-  const shop = await fetch('https://www.keychron.com/products/keychron-desk-mat.js', { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36' } }).then((r) => r.status).catch(() => 0);
+  const shop = await fetch('https://www.keychron.com/search/suggest.json?q=gift&resources[type]=product&resources[limit]=2&country=US&currency=USD', { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36' } }).then((r) => r.status).catch(() => 0);
   if (shop !== 200) log(`shopify status ${shop}, waiting`);
   if (p && p.wait <= QUIET && shop === 200) {
     tries++;
