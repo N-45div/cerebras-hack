@@ -26,25 +26,25 @@ Kimi vs Kimi: 346 vs 83 tok/s median streamed, Cerebras vs Moonshot kimi-k3.1-pr
 
 ---
 
-## 2. Reddit r/cerebras (flair: Kimi K3.1 Pro Hackathon)
+## 2. Reddit r/Cerebras (flair: Kimi K3.1 Pro Hackathon; upload `renders/tab-bankruptcy-film-voiced.mp4` as the video)
 
-**Title:** I declared tab bankruptcy: Kimi K3.1 Pro on Cerebras read, judged and closed my 135 tabs in 39 seconds
+**Title:** I declared tab bankruptcy: OpenClaw + Kimi K3.1 Pro on Cerebras read, roasted and closed my 135 tabs in 12.5 seconds
 
 **Body:**
-Built for the Kimi K3.1 Pro hackathon. Tab Bankruptcy is an OpenClaw skill: you tell your agent you have too many tabs, and it
+Built for the Kimi K3.1 Pro hackathon. Tab Bankruptcy is an OpenClaw skill. You tell your agent "I have way too many tabs open, declare tab bankruptcy", and it:
 
-1. reads the text of every open tab (Chrome DevTools Protocol, ~1 s for 135 tabs),
-2. sends them to Kimi K3.1 Pro on Cerebras in parallel batches: each tab gets a category, a one-line TL;DR, a keep/skim/let-go verdict and a roast,
+1. reads the text of every open tab (Chrome DevTools Protocol, about a second for 135 tabs),
+2. sends them to Kimi K3.1 Pro on Cerebras in parallel: each tab gets a category, a one-line TL;DR, a keep / skim / let-go verdict and a roast,
 3. closes each tab as its verdict lands, while a live dashboard counts down,
 4. writes a digest: the overall roast, what's actually worth reading, and the one tab you'll regret closing. Every URL is saved to a file.
 
-The run in the video: 135 real tabs, 519,907 words (36.4 hours of reading), done in 38.9 s. Kimi decoded at 336 tok/s mean per call during peak hackathon load (the 14 s queue wait at the start is shown at 7x and labelled).
+The run in the video was started from standard OpenClaw: 135 real tabs, 439,529 words (about 30 hours of reading), done in 12.5 seconds, 1,573 tok/s across the parallel calls.
 
-Why the speed matters: 135 tabs is ~70K tokens of reading plus a judged, roasted verdict for every one. At typical GPU-serving speeds that's a coffee break; on Cerebras the tabs close while you watch.
+Kimi vs Kimi: same model, same 8 tabs, same prompt, streamed. Kimi on Cerebras: 346 tok/s. Kimi on Moonshot's own highspeed GPU tier: 83 tok/s. 4.2x faster (median of 3 runs, first-to-last-token timing).
 
-Its diagnosis of me: "Chronic tabular hypertrophy with acute Wikipedia-induced curiosity cascades."
+Its diagnosis of my browser: "Chronic tabular accumulation with acute Wikipedia metastasis."
 
-Code: https://github.com/N-45div/cerebras-hack
+Code and the OpenClaw skill: https://github.com/N-45div/cerebras-hack
 
 ---
 
