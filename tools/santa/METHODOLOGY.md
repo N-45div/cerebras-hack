@@ -77,3 +77,18 @@ OpenClaw configuration used (patched build's state directory):
 5. `OPENCLAW_STATE_DIR=<state dir> node tools/santa/verify-run.mjs <session-id-prefix>` checks every pick against the run's fetched data.
 
 During the hackathon the shared endpoint was heavily congested (queues of 30-140 s and frequent 429s). OpenClaw retries a call up to 10 times and then gives up, so many attempts never completed; the watcher simply tries again at the next quiet moment.
+
+## What sets the speed: measured from our own transcripts
+
+An analysis of 166 responses with server timing (31 sessions) found:
+
+- Decode time fits `reasoning_tokens / 253 + other_tokens / 752` (R² 0.82): **Kimi's reasoning decodes about 3x slower than everything else**.
+- Mean tok/s by reasoning share: under 5% → 869; 5-20% → 668; 20-40% → 466; 40-60% → 377; over 60% → 293.
+- **Context size made no difference** (at matched reasoning share: 429 / 426 / 402 / 414 tok/s for prompts under 10K, 10-25K, 25-50K and over 50K tokens).
+- Reasoning cannot be switched off on this endpoint (`none` / `minimal` are rejected); `low` is the minimum.
+
+So the prompt now asks Kimi not to deliberate (`prompts/santa-go.txt`): *"Work on instinct… Your thinking before every step must be exactly the one word 'Go'."* Kimi still chooses the gift ideas, search terms, pages and picks. **Disclosure:** that line, the per-call settings (US results, compact responses, a product/price extraction schema) and the spare sixth scrape each have a function (US prices, visible prices, cover for a failed page), but they are also there partly because they make responses faster.
+
+## State hygiene
+
+OpenClaw's background memory "dreaming" job ran on the same model key and wrote session notes into the agent workspace. Nothing had been promoted into `MEMORY.md`, but to guarantee no earlier results can reach a later run, dreaming is disabled (`plugins.entries.memory-core.config.dreaming.enabled: false`) and its notes were moved out of the workspace.
