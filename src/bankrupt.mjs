@@ -90,6 +90,8 @@ const server = http.createServer((req, res) => {
 const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
 const chunk = (arr, n) => Array.from({ length: Math.ceil(arr.length / n) }, (_, k) => arr.slice(k * n, k * n + n));
 const isOurs = (url) => url.startsWith(DASH) || url.includes(`127.0.0.1:${config.dashboardPort}`) || url.includes(`localhost:${config.dashboardPort}`);
+// Local apps (e.g. the OpenClaw chat that triggered this run) are tools, not tabs to judge or close.
+const isLocal = (url) => /^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])(:\d+)?\//.test(url);
 
 async function start() {
   if (started) return;
@@ -104,7 +106,7 @@ async function start() {
 
 async function run() {
   const t0 = Date.now();
-  let tabs = (await chrome.listTabs()).filter((t) => !isOurs(t.url));
+  let tabs = (await chrome.listTabs()).filter((t) => !isOurs(t.url) && !isLocal(t.url));
   if (LIMIT) tabs = tabs.slice(0, LIMIT);
   if (!tabs.length) {
     emit('error', { message: 'No tabs open. Run: node src/seed.mjs' });
@@ -243,7 +245,7 @@ function printSummary(r, digestPath, runPath) {
 // ---------- boot ----------
 await chrome.launch();
 server.listen(config.dashboardPort, '127.0.0.1', async () => {
-  const tabs = (await chrome.listTabs()).filter((t) => !isOurs(t.url));
+  const tabs = (await chrome.listTabs()).filter((t) => !isOurs(t.url) && !isLocal(t.url));
   console.error(`[tab-bankruptcy] ${tabs.length} tabs open. Dashboard: ${DASH}`);
   // Open the dashboard inside the same Chrome so it is the last tab standing.
   const existing = (await chrome.listTabs()).find((t) => isOurs(t.url));
