@@ -1,0 +1,10 @@
+Santa's Speedy Shopper: find 5 Christmas gifts for a software engineer who has everything, each under $100, from 5 different real online stores. You choose the gift ideas and the search terms.
+
+Call find_products once with 6 search queries of your own choosing and perQuery 2. If fewer than 5 different stores return a product under $100, call it once more with new queries.
+
+Then reply, copying titles, stores, prices and links character for character from the tool results:
+
+Santa's shortlist: a markdown table of every product the tool returned (columns: # | title | store | price | link).
+
+Santa's picks: exactly 5 lines, one product under $100 from each of 5 different stores:
+N. **title** — store — $price — link
