@@ -51,7 +51,22 @@ Code: https://github.com/N-45div/cerebras-hack
 
 ## 3. Discord #share-your-demo (Speed Bounty), attach the Santa video
 
-(attach `renders/santa-bounty-391.mp4`, or a faster take if the watcher finds one)
+(attach `renders/santa-session-477.mp4`: the finished session with the 477 readout.
+Fallback: `renders/santa-bounty-391.mp4`, the run recorded live; its gifts are listed under "391 run" below.)
+
+Speed Bounty entry: 477 TPS
+
+TPS: 477 tok/s mean · 760 p90, the server-side readout from the official speed patch, on screen in the video.
+Cerebras was overloaded, so OpenClaw paused the run on 429s and resumed it automatically once capacity came back; Kimi then finished the list in 7 seconds.
+
+The 5 gifts (software engineer who has everything, each under $100):
+1. Metrolog Ruler · Craighill · $98.00 · https://www.craighill.co/products/metrolog-ruler
+2. Hybrid Laptop Sleeve v2 · Orbitkey · $59.92 · https://www.orbitkey.com/products/hybrid-laptop-sleeve-v2
+3. Keychron M6 Wireless Mouse · Keychron · from $38.24 · https://www.keychron.com/products/keychron-m6-wireless-mouse
+4. Valet Tray (Maple, Medium) · Ugmonk · $79.00 · https://ugmonk.com/products/valet-tray-maple-medium
+5. Cubelet · TOM BIHN · $25.00 · https://www.tombihn.com/products/cubelet
+
+---- 391 run (recorded live, fallback) ----
 
 Speed Bounty entry: 391 TPS
 
